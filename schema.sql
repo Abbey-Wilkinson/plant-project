@@ -1,7 +1,11 @@
 DROP TABLE IF EXISTS plant_condition;
+GO
 DROP TABLE IF EXISTS plant;
+GO
 DROP TABLE IF EXISTS botanist;
+GO
 DROP TABLE IF EXISTS origin;
+GO
 
 CREATE TABLE origin (
     origin_id INT GENERATED ALWAYS AS IDENTITY,
@@ -18,7 +22,7 @@ CREATE TABLE botanist (
     first_name VARCHAR(25) NOT NULL,
     surname VARCHAR(25) NOT NULL,
     email VARCHAR(30) UNIQUE NOT NULL,
-    phone_number INT UNIQUE NOT NULL,
+    phone_number VARCHAR(20) UNIQUE NOT NULL,
     PRIMARY KEY (botanist_id)
 );
 
@@ -46,3 +50,5 @@ CREATE TABLE plant_condition (
     FOREIGN KEY (plant_id)
         REFERENCES plant(plant_id)
 );
+
+GO
