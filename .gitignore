@@ -1,11 +1,12 @@
 __pycache__
 .coverage
 .DS_Store
+.pytest_cache
 
 .env
 .terraform
 venv
 
 # Ignore Data files
-*.csv
 *.json
+*.csv
