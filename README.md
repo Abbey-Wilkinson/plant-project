@@ -1,1 +1,1 @@
-# plant-project
+# Plants Project - Queen Bees 
