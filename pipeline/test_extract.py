@@ -1,8 +1,8 @@
 """Tests for the extract script."""
 import pytest
 
-from errors import APIError
-from extract import get_number_of_plants, connect_to_plant_ids
+from pipeline.errors import APIError
+from pipeline.extract import get_number_of_plants, connect_to_plant_ids
 
 
 def test_connect_to_plant_ids(requests_mock):
