@@ -38,13 +38,38 @@ def connect_to_plant_ids(total_num_plants: int, api_plants: str):
 
         plants = []
         for id in range(total_num_plants):
-
-            response = requests.get(f'{api_plants}{id}', timeout=10)
+            response = requests.get(f'{api_plants}{id}', timeout=20)
 
             if response.status_code == 200:
-
+                print(id)
                 data = response.json()
-                plants.append(data)
+                wanted_data = {
+                    "botanist_name": data["botanist"]["name"],
+                    "botanist_email": data["botanist"]["email"],
+                    "botanist_phone": data["botanist"]["phone"],
+                    "last_watered": data["last_watered"],
+                    "name": data["name"],
+                    "origin_location": data["origin_location"],
+                    "plant_id": data["plant_id"],
+                    "recording_taken": data["recording_taken"],
+                    "soil_moisture": data["soil_moisture"],
+                    "temperature": data["temperature"]
+                }
+
+                # These aren't always in the data
+                if "scientific_name" in data:
+                    wanted_data["scientific_name"] = data["scientific_name"][0]
+                else:
+                    wanted_data["scientific_name"] = "N/A"
+
+                if "images" in data and data["images"] is not None:
+                    wanted_data["image"] = data["images"]["small_url"]
+                elif "images" == "null":
+                    wanted_data["image"] = "N/A"
+                else:
+                    wanted_data["image"] = "N/A"
+
+                plants.append(wanted_data)
 
         return plants
 
@@ -61,6 +86,7 @@ def connect_to_plant_ids(total_num_plants: int, api_plants: str):
 
 def convert_to_pd_dataframe(plants:  list[dict]) -> pd.DataFrame:
     """Converts the list of all plant dictionaries into a pandas dataframe."""
+
     df = pd.DataFrame(plants)
     df = df.fillna("N/A")
     return df
@@ -82,6 +108,6 @@ if __name__ == "__main__":
     print("Converting into DataFrame...")
     df = convert_to_pd_dataframe(plants)
 
-    df.to_csv("test_output.csv")
+    df.to_csv("test_output.csv", index=False)
 
     print(f"Extract phase complete --- {perf_counter() - plants_time}s.")
