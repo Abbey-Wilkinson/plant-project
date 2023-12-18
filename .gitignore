@@ -1,0 +1,11 @@
+__pycache__
+.coverage
+.DS_Store
+
+.env
+.terraform
+venv
+
+# Ignore Data files
+*.csv
+*.json
