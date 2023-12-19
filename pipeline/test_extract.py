@@ -1,4 +1,6 @@
-"""Tests for the extract script."""
+"""
+Tests for the extract script.
+"""
 
 from pipeline.extract import get_number_of_plants, connect_to_plant_ids
 

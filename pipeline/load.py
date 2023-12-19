@@ -1,6 +1,9 @@
-"""Loads the cleaned data into an AWS RDS database."""
+"""
+Loads the cleaned data into an AWS RDS database.
+"""
 
 from os import environ
+from time import perf_counter
 
 from dotenv import load_dotenv
 import pandas as pd
@@ -11,6 +14,7 @@ def get_database_connection():
     """
     Establishes a database connection to the database specified.
     """
+
     try:
         engine = create_engine(
             f"mssql+pymssql://{environ['DB_USER']}:{environ['DB_PASSWORD']}@{environ['DB_HOST']}/?charset=utf8")
@@ -27,11 +31,9 @@ def get_all_info_from_table(conn):
     Returns all of the information from the plant condition table from an sql query.
     """
 
-    # TODO: Make tables in RDS such that the query can be amended and completed.
-
     conn.execute(sql.text("USE plants;"))
 
-    query = sql.text("SELECT * FROM s_epsilon.XXXXX;")
+    query = sql.text("SELECT * FROM s_epsilon.plant_condition;")
 
     conn.execute(sql.text("COMMIT;"))
     res = conn.execute(query).fetchall()
@@ -39,13 +41,38 @@ def get_all_info_from_table(conn):
     return res
 
 
+def insert_data_into_database(conn, rows):
+    """
+    Inserts the cleaned data into the plant condition table of the s_epsilon schema.
+    """
+
+    conn.execute(sql.text("USE plants;"))
+
+    for row in rows:
+
+        query = sql.text(
+            "INSERT INTO s_epsilon.plant_condition (plant_id, at, soil_moisture, temperature) VALUES (:plant_id, :recording_taken,:soil_moisture, :temperature)")
+        conn.execute(query, {"plant_id": row["plant_id"],
+                             "recording_taken": row["recording_taken"],
+                             "soil_moisture": row["soil_moisture"],
+                             "temperature": row["temperature"]
+                             })
+
+
 if __name__ == "__main__":
 
     load_dotenv()
 
-    df = pd.read_csv("transformed_test.csv")
+    plants_time = perf_counter()
 
     conn = get_database_connection()
 
+    df = pd.read_csv("transformed_test.csv")
+
+    rows = df.to_dict('records')
+
+    insert_data_into_database(conn, rows)
+
+    print(f"Load phase complete --- {perf_counter() - plants_time}s.")
+
     all_info = get_all_info_from_table(conn)
-    print(all_info)

@@ -6,3 +6,4 @@ requests_mock
 sqlalchemy
 python-dotenv
 boto3
+pymssql

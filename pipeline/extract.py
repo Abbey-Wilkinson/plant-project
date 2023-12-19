@@ -1,4 +1,6 @@
-"""Extract script for the plants pipeline."""
+"""
+Extract script for the plants pipeline.
+"""
 import requests
 from requests.exceptions import ConnectionError, Timeout, HTTPError
 import pandas as pd
