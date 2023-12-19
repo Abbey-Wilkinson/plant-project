@@ -62,6 +62,7 @@ CREATE TABLE s_epsilon.plant_condition (
     at DATETIME NOT NULL,
     soil_moisture FLOAT NOT NULL,
     temperature FLOAT NOT NULL,
+    last_watered DATETIME NOT NULL,
     plant_id INT NOT NULL,
     FOREIGN KEY (plant_id)
         REFERENCES s_epsilon.plant(plant_id)
