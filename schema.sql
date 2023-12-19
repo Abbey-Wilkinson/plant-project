@@ -59,7 +59,7 @@ CREATE TABLE s_epsilon.plant (
 
 CREATE TABLE s_epsilon.plant_condition (
     plant_condition_id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    at TIMESTAMP NOT NULL,
+    at DATETIME NOT NULL,
     soil_moisture FLOAT NOT NULL,
     temperature FLOAT NOT NULL,
     plant_id INT NOT NULL,
@@ -165,7 +165,6 @@ INSERT INTO s_epsilon.origin(latitude, longitude, region, country_id)
 
 INSERT INTO s_epsilon.plant(plant_name, scientific_name, botanist_id, origin_id)
         VALUES
-    ('Epipremnum Aureum', 'Epipremnum aureum', 2, 1),
     ('Venus flytrap', 'N/A', 1, 2),
     ('Corpse flower', 'N/A', 2, 3),
     ('Rafflesia arnoldii', 'N/A', 3, 1),
