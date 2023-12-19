@@ -1,4 +1,6 @@
-"""Loads the cleaned data into an AWS RDS database."""
+"""
+Loads the cleaned data into an AWS RDS database.
+"""
 
 from os import environ
 from time import perf_counter
@@ -12,6 +14,7 @@ def get_database_connection():
     """
     Establishes a database connection to the database specified.
     """
+
     try:
         engine = create_engine(
             f"mssql+pymssql://{environ['DB_USER']}:{environ['DB_PASSWORD']}@{environ['DB_HOST']}/?charset=utf8")
@@ -42,6 +45,7 @@ def insert_data_into_database(conn, rows):
     """
     Inserts the cleaned data into the plant condition table of the s_epsilon schema.
     """
+
     conn.execute(sql.text("USE plants;"))
 
     for row in rows:

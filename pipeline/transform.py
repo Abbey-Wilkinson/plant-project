@@ -1,4 +1,6 @@
-"""Transform script for the plants pipeline."""
+"""
+Transform script for the plants pipeline.
+"""
 import pandas as pd
 from time import perf_counter
 
