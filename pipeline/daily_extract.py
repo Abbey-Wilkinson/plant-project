@@ -8,7 +8,7 @@ from os import environ, remove
 
 from datetime import datetime
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, sql
+from sqlalchemy import create_engine, sql, Connection
 import pandas as pd
 from boto3 import client
 
@@ -18,7 +18,7 @@ CURRENT_DATE = datetime.today()
 BAD_REQUEST = 400
 
 
-def get_database_connection():
+def get_database_connection() -> Connection:
     """
     Establishes a connection with the plants database.
     """
@@ -33,7 +33,7 @@ def get_database_connection():
             {'error': True, 'message': 'Connection Failed'}, BAD_REQUEST)
 
 
-def extract_from_rds(db_conn) -> list[tuple]:
+def extract_from_rds(db_conn: Connection) -> list[tuple]:
     """
     Extracts all the plant condition entries from the epsilon schema.
     """
