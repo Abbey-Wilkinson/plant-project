@@ -42,8 +42,12 @@ def clean_soil_moisture_data(df: pd.DataFrame) -> pd.DataFrame:
     Clears all invalid soil moistures from the DataFrame.
     """
 
+    df["soil_moisture"] = pd.to_numeric(
+        df["soil_moisture"], errors="coerce")
     df = df.drop(df[df.soil_moisture < MINIMUM_SOIL_MOISTURE].index)
     df = df.drop(df[df.soil_moisture > MAXIMUM_SOIL_MOISTURE].index)
+
+    df = df.dropna()
 
     return df
 
@@ -53,8 +57,12 @@ def clean_temperature_data(df: pd.DataFrame) -> pd.DataFrame:
     Clears all invalid temperatures from the DataFrame.
     """
 
+    df["temperature"] = pd.to_numeric(
+        df["temperature"], errors="coerce")
     df = df.drop(df[df.temperature < MINIMUM_TEMPERATURE].index)
     df = df.drop(df[df.temperature > MAXIMUM_TEMPERATURE].index)
+
+    df = df.dropna()
 
     return df
 
