@@ -10,7 +10,6 @@ __pycache__
 *.tfvars
 
 venv
-Dockerfile
 
 # Ignore Data files
 *.json
