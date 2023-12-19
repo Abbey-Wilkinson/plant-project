@@ -1,14 +1,17 @@
-"""Loads all the daily data from the database, converts it to a .csv file and uploads it to the s3 bucket."""
+"""
+Loads all the daily data from the database, converts it to a .csv file
+and uploads it to the s3 bucket.
+"""
 
 from os import environ, remove
 
+from datetime import datetime
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, sql
 import pandas as pd
 from boto3 import client
-from datetime import datetime
 
-from pipeline.errors import DBConnectionError
+from errors import DBConnectionError
 
 CURRENT_DATE = datetime.today()
 BAD_REQUEST = 400
@@ -29,14 +32,14 @@ def get_database_connection():
             {'error': True, 'message': 'Connection Failed'}, BAD_REQUEST)
 
 
-def extract_from_rds(conn) -> list[tuple]:
+def extract_from_rds(db_conn) -> list[tuple]:
     """
     Extracts all the plant condition entries from the epsilon schema.
     """
-    conn.execute(sql.text("USE plants;"))
+    db_conn.execute(sql.text("USE plants;"))
 
     query = sql.text("SELECT * FROM s_epsilon.plant_condition;")
-    res = conn.execute(query).fetchall()
+    res = db_conn.execute(query).fetchall()
 
     return res
 
@@ -51,7 +54,8 @@ def create_condition_dataframe(conditions: list[tuple]) -> list[dict]:
             'at': condition[1],
             'soil_moisture': condition[2],
             'temp': condition[3],
-            'plant_id': condition[4]
+            'last_watered': condition[4],
+            'plant_id': condition[5]
         }
 
         plant_conditions.append(data)
@@ -75,11 +79,15 @@ if __name__ == "__main__":
 
     load_dotenv()
 
-    s3 = client("s3",
-                aws_access_key_id=environ["AWS_ACCESS_KEY_ID"],
-                aws_secret_access_key=environ["AWS_SECRET_ACCESS_KEY"])
+    try:
+        s3 = client("s3",
+                    aws_access_key_id=environ["AWS_ACCESS_KEY_ID"],
+                    aws_secret_access_key=environ["AWS_SECRET_ACCESS_KEY"])
 
-    conn = get_database_connection()
-    conditions = extract_from_rds(conn)
-    plant_conditions = create_condition_dataframe(conditions)
-    convert_to_csv_and_upload(plant_conditions, s3, "c9-queenbees-bucket")
+        conn = get_database_connection()
+        list_of_conditions = extract_from_rds(conn)
+        plant_conditions_dicts = create_condition_dataframe(list_of_conditions)
+        convert_to_csv_and_upload(
+            plant_conditions_dicts, s3, "c9-queenbees-bucket")
+    except KeyError as error:
+        print("Can't connect to AWS")
