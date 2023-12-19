@@ -1,5 +1,6 @@
 """Script containing all of the custom errors."""
 
+
 class APIError(Exception):
     """Describes an error triggered by a failing API call."""
 
