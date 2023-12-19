@@ -201,3 +201,27 @@ resource "aws_scheduler_schedule" "plant-pipeline-schedule" {
         }
     }
 }
+
+# create EventBridge schedule for rds-s3 pipeline
+resource "aws_scheduler_schedule" "rds-pipeline-schedule" {
+    name       = "c9-queenbees-rds-s3-pipeline-schedule"
+    schedule_expression = "cron(59 23 * * ? *)"
+    flexible_time_window {
+        mode = "OFF"
+    }
+    target {
+        arn      = data.aws_ecs_cluster.c9-cluster.arn
+        role_arn = aws_iam_role.schedule-role.arn
+        ecs_parameters {
+          task_definition_arn = aws_ecs_task_definition.rds-pipeline-task-def.arn
+          task_count = 1
+          launch_type = "FARGATE"
+          platform_version = "LATEST"
+          network_configuration {
+            subnets = [ "subnet-0d0b16e76e68cf51b", "subnet-081c7c419697dec52", "subnet-02a00c7be52b00368" ]
+            security_groups = [ "sg-020697b6514174b72" ]
+            assign_public_ip = true
+          }
+        }
+    }
+}
