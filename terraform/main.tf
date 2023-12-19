@@ -119,7 +119,9 @@ resource "aws_ecs_task_definition" "dashboard-task-def" {
             environment: [
                 { name: "DB_HOST", value: var.DB_HOST },
                 { name: "DB_PASSWORD", value: var.DB_PASSWORD },
-                { name: "DB_USER", value: var.DB_USER }
+                { name: "DB_USER", value: var.DB_USER },
+                { name: "AWS_ACCESS_KEY_ID", value: var.AWS_ACCESS_KEY_ID},
+                { name: "AWS_SECRET_ACCESS_KEY", value: var.AWS_SECRET_ACCESS_KEY}
             ]
         }
     ])
