@@ -30,12 +30,12 @@ if __name__ == "__main__":
     print("Converting into DataFrame...")
     df = convert_to_pd_dataframe(plants)
 
-    df.to_csv("sample.csv", index=False)
+    df.to_csv("extracted_data.csv", index=False)
 
     print(f"Extract phase complete --- {perf_counter() - plants_time}s.")
 
     plants_time = perf_counter()
-    df = pd.read_csv("sample.csv")
+    df = pd.read_csv("extracted_data.csv")
 
     print("Cleaning data...")
     df = clean_recording_taken_data(df)
@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     df = clean_temperature_data(df)
 
-    df.to_csv("transformed_test.csv", index=False)
+    df.to_csv("transformed_data.csv", index=False)
     print(f"Transform phase complete --- {perf_counter() - plants_time}s.")
 
     load_dotenv()
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     conn = get_database_connection()
 
-    df = pd.read_csv("transformed_test.csv")
+    df = pd.read_csv("transformed_data.csv")
 
     rows = df.to_dict('records')
 
