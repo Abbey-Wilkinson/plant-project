@@ -51,9 +51,10 @@ def insert_data_into_database(conn, rows):
     for row in rows:
 
         query = sql.text(
-            "INSERT INTO s_epsilon.plant_condition (plant_id, at, soil_moisture, temperature) VALUES (:plant_id, :recording_taken,:soil_moisture, :temperature)")
+            "INSERT INTO s_epsilon.plant_condition (plant_id, at, last_watered, soil_moisture, temperature) VALUES (:plant_id, :recording_taken, :last_watered, :soil_moisture, :temperature)")
         conn.execute(query, {"plant_id": row["plant_id"],
                              "recording_taken": row["recording_taken"],
+                             "last_watered": row["last_watered"],
                              "soil_moisture": row["soil_moisture"],
                              "temperature": row["temperature"]
                              })
