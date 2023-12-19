@@ -43,6 +43,8 @@ if __name__ == "__main__":
 
     df = clean_temperature_data(df)
 
+    print(df)
+
     print(f"Transform phase complete --- {perf_counter() - clean_time}s.")
 
     load_dotenv()
@@ -51,7 +53,8 @@ if __name__ == "__main__":
 
     conn = get_database_connection()
 
-    rows = df.to_dict("records")
+    rows = df.to_dict('records')
+    print(rows)
 
     insert_data_into_database(conn, rows)
 
