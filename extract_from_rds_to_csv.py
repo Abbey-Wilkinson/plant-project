@@ -1,3 +1,5 @@
+"""Loads all the daily data from the database, converts it to a .csv file and uploads it to the s3 bucket."""
+
 from os import environ, remove
 
 from dotenv import load_dotenv
@@ -13,6 +15,9 @@ BAD_REQUEST = 400
 
 
 def get_database_connection():
+    """
+    Establishes a connection with the plants database.
+    """
     try:
         print("Making new database connection")
         engine = create_engine(
@@ -25,7 +30,9 @@ def get_database_connection():
 
 
 def extract_from_rds(conn) -> list[tuple]:
-
+    """
+    Extracts all the plant condition entries from the epsilon schema.
+    """
     conn.execute(sql.text("USE plants;"))
 
     query = sql.text("SELECT * FROM s_epsilon.plant_condition;")
@@ -35,6 +42,9 @@ def extract_from_rds(conn) -> list[tuple]:
 
 
 def create_condition_dataframe(conditions: list[tuple]) -> list[dict]:
+    """
+    Loops through every plant condition entry and converts them into a dataframe.
+    """
     plant_conditions = []
     for condition in conditions:
         data = {
@@ -50,6 +60,9 @@ def create_condition_dataframe(conditions: list[tuple]) -> list[dict]:
 
 
 def convert_to_csv_and_upload(plant_conditions: list[dict], s3_client: client, bucket):
+    """
+    Converts the plant condition dataframe into a .csv file and uploads it to the s3 bucket.
+    """
     df = pd.DataFrame(plant_conditions)
     df.to_csv('./plant_conditions.csv')
 
