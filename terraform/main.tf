@@ -19,6 +19,7 @@ resource "aws_ecr_repository" "dashboard" {
   name = "c9-angelo-dashboard-repo"
 }
 
+# create the bucket and configure its settings
 resource "aws_s3_bucket" "plant-bucket" {
   bucket = "c9-queenbees-bucket"
   object_lock_enabled = false
