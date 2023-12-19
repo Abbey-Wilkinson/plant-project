@@ -1,7 +1,5 @@
 """Tests for the extract script."""
-import pytest
 
-from pipeline.errors import APIError
 from pipeline.extract import get_number_of_plants, connect_to_plant_ids
 
 
