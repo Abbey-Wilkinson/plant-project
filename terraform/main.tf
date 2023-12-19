@@ -42,8 +42,19 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "plant-bucket-encr
   }
 }
 
-# TODO: change the image string to the appropriate image in the ECR for all task definitions
-# Also, configure the environment properly
+#
+#
+#
+#
+#
+# TODO: change the image string to the appropriate image in the ECR for all task definitions !!!
+#
+#
+#
+#
+#
+#
+#
 
 # task definition for pipeline that extracts from API and uploads to RDS
 resource "aws_ecs_task_definition" "plant-pipeline-task-def" {
@@ -56,11 +67,9 @@ resource "aws_ecs_task_definition" "plant-pipeline-task-def" {
             image: "129033205317.dkr.ecr.eu-west-2.amazonaws.com/c9-queenbees-plant-pipeline-repo:dummy"
             essential: true
             environment: [
-                { name: "DB_NAME", value: var.DB_NAME },
                 { name: "DB_HOST", value: var.DB_HOST },
                 { name: "DB_PASSWORD", value: var.DB_PASSWORD },
-                { name: "DB_USERNAME", value: var.DB_USERNAME },
-                { name: "DB_PORT", value: var.DB_PORT }
+                { name: "DB_USER", value: var.DB_USER }
             ]
         }
     ])
@@ -80,11 +89,11 @@ resource "aws_ecs_task_definition" "rds-pipeline-task-def" {
             image: "129033205317.dkr.ecr.eu-west-2.amazonaws.com/c9-queenbees-s3-pipeline-repo:dummy"
             essential: true
             environment: [
-                { name: "DB_NAME", value: var.DB_NAME },
                 { name: "DB_HOST", value: var.DB_HOST },
                 { name: "DB_PASSWORD", value: var.DB_PASSWORD },
-                { name: "DB_USERNAME", value: var.DB_USERNAME },
-                { name: "DB_PORT", value: var.DB_PORT }
+                { name: "DB_USER", value: var.DB_USER },
+                { name: "AWS_ACCESS_KEY_ID", value: var.AWS_ACCESS_KEY_ID},
+                { name: "AWS_SECRET_ACCESS_KEY", value: var.AWS_SECRET_ACCESS_KEY}
             ]
         }
     ])
@@ -108,11 +117,9 @@ resource "aws_ecs_task_definition" "dashboard-task-def" {
                 hostPort = 8501
             }]
             environment: [
-                { name: "DB_NAME", value: var.DB_NAME },
                 { name: "DB_HOST", value: var.DB_HOST },
                 { name: "DB_PASSWORD", value: var.DB_PASSWORD },
-                { name: "DB_USERNAME", value: var.DB_USERNAME },
-                { name: "DB_PORT", value: var.DB_PORT }
+                { name: "DB_USER", value: var.DB_USER }
             ]
         }
     ])
@@ -121,7 +128,7 @@ resource "aws_ecs_task_definition" "dashboard-task-def" {
     cpu = 1024
 }
 
-# security group to allow inboung traffic on port 8501 for the dashboard
+# security group to allow inbound traffic on port 8501 for the dashboard
 resource "aws_security_group" "dashboard-sg" {
   name        = "c9-queenbees-dashboard-sg"
   description = "Allow outbound traffic for port 8501, so users can see the dashboard"
