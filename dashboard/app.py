@@ -14,6 +14,8 @@ def get_header_metrics() -> None:
     with head_cols[0]:
         st.metric("Total Number of Plants :herb:",
                   len(selected_plants))
+    with head_cols[1]:
+        st.metric("Average Soil Moisture: :potted_plant:", )
 
 
 if __name__ == "__main__":
