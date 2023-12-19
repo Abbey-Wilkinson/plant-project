@@ -19,6 +19,38 @@ resource "aws_ecr_repository" "dashboard" {
   name = "c9-angelo-dashboard-repo"
 }
 
+resource "aws_s3_bucket" "plant-bucket" {
+  bucket = "c9-queenbees-bucket"
+  object_lock_enabled = false
+}
+
+resource "aws_s3_bucket_public_access_block" "plant-bucket-public-access" {
+  bucket = aws_s3_bucket.plant-bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_versioning" "plany-bucket-versioning" {
+  bucket = aws_s3_bucket.plant-bucket.id
+  versioning_configuration {
+    status = "Disabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "plant-bucket-encryption" {
+  bucket = aws_s3_bucket.plant-bucket.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "AES256"
+    }
+    bucket_key_enabled = true
+  }
+}
+
+
 # task definition for dashboard
 # TODO: change the image string to the appropriate image in the ECR
 # Also, configure the environment properly
