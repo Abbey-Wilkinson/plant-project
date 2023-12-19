@@ -149,3 +149,115 @@ def test_soil_moisture_valid_values():
     dict_df = df.to_dict()
     assert dict_df == {"soil_moisture": {0: 18.722501744094487, 1: 25.753327753412194},
                        "recording_taken": {0: "2023-12-19 12:50:49", 1: "2023-12-19 12:50:51"}}
+
+
+def test_soil_moisture_incorrect_values():
+    """
+    Checks the clean_soil_moisture_data function completes when one value is invalid.
+    """
+
+    filled_data = {"soil_moisture": [-18.722501744094487, 25.753327753412194],
+                   "recording_taken": ["2023-12-19 12:50:49", "2023-12-19 12:50:51"]}
+    df = pd.DataFrame(data=filled_data).reset_index(drop=True)
+
+    df = clean_soil_moisture_data(df)
+
+    dict_df = df.to_dict()
+    assert dict_df == {"soil_moisture": {1: 25.753327753412194},
+                       "recording_taken": {1: "2023-12-19 12:50:51"}}
+
+
+def test_soil_moisture_both_incorrect_values():
+    """
+    Checks the clean_soil_moisture_data function completes when all values are invalid.
+    """
+
+    filled_data = {"soil_moisture": [-18.722501744094487, "sofsaj"],
+                   "recording_taken": ["2023-12-19 12:50:49", "2023-12-19 12:50:51"]}
+    df = pd.DataFrame(data=filled_data).reset_index(drop=True)
+
+    df = clean_soil_moisture_data(df)
+
+    dict_df = df.to_dict()
+    assert dict_df == {"soil_moisture": {},
+                       "recording_taken": {}}
+
+
+def test_soil_moisture_no_values():
+    """
+    Checks the clean_soil_moisture_data function completes when there are no values.
+    """
+
+    filled_data = {"soil_moisture": [""],
+                   "recording_taken": [""]}
+    df = pd.DataFrame(data=filled_data).reset_index(drop=True)
+
+    df = clean_soil_moisture_data(df)
+
+    dict_df = df.to_dict()
+    assert dict_df == {"soil_moisture": {},
+                       "recording_taken": {}}
+
+
+def test_temperature_valid_values():
+    """
+    Checks the clean_temperature_data function completes when all values are valid.
+    """
+
+    filled_data = {"temperature": [18.722501744094487, 25.753327753412194],
+                   "recording_taken": ["2023-12-19 12:50:49", "2023-12-19 12:50:51"]}
+    df = pd.DataFrame(data=filled_data).reset_index(drop=True)
+
+    df = clean_temperature_data(df)
+
+    dict_df = df.to_dict()
+    assert dict_df == {"temperature": {0: 18.722501744094487, 1: 25.753327753412194},
+                       "recording_taken": {0: "2023-12-19 12:50:49", 1: "2023-12-19 12:50:51"}}
+
+
+def test_temperature_incorrect_values():
+    """
+    Checks the clean_temperature_data function completes when one value is invalid.
+    """
+
+    filled_data = {"temperature": [-18.722501744094487, 25.753327753412194],
+                   "recording_taken": ["2023-12-19 12:50:49", "2023-12-19 12:50:51"]}
+    df = pd.DataFrame(data=filled_data).reset_index(drop=True)
+
+    df = clean_temperature_data(df)
+
+    dict_df = df.to_dict()
+    assert dict_df == {"temperature": {1: 25.753327753412194},
+                       "recording_taken": {1: "2023-12-19 12:50:51"}}
+
+
+def test_temperature_both_incorrect_values():
+    """
+    Checks the clean_temperature_data function completes when all values are invalid.
+    """
+
+    filled_data = {"temperature": [-18.722501744094487, "sofsaj"],
+                   "recording_taken": ["2023-12-19 12:50:49", "2023-12-19 12:50:51"]}
+    df = pd.DataFrame(data=filled_data).reset_index(drop=True)
+
+    df = clean_temperature_data(df)
+
+    dict_df = df.to_dict()
+    assert dict_df == {"temperature": {},
+                       "recording_taken": {}}
+
+
+def test_temperature_no_values():
+    """
+    Checks the clean_temperature_data function completes when there are no values.
+    """
+
+    filled_data = {"temperature": [""],
+                   "recording_taken": [""]}
+    df = pd.DataFrame(data=filled_data).reset_index(drop=True)
+
+    df = clean_temperature_data(df)
+
+    dict_df = df.to_dict()
+    assert dict_df == {"temperature": {},
+                       "recording_taken": {}}
