@@ -1,3 +1,6 @@
+USE plants;
+GO
+
 DROP TABLE IF EXISTS s_epsilon.plant_condition;
 GO
 DROP TABLE IF EXISTS s_epsilon.plant;
@@ -11,48 +14,43 @@ GO
 DROP TABLE IF EXISTS s_epsilon.continent;
 GO
 
-CREATE TABLE  s_epsilon.continent (
-    continent_id INT GENERATED ALWAYS AS IDENTITY,
-    continent_name VARCHAR(25),
-    PRIMARY KEY (continent_id)
+CREATE TABLE s_epsilon.continent (
+    continent_id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    continent_name VARCHAR(25) NOT NULL,
 );
 
 CREATE TABLE s_epsilon.country (
-    country_id INT GENERATED ALWAYS AS IDENTITY,
+    country_id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     country_name VARCHAR(30) UNIQUE NOT NULL,
     continent_id INT NOT NULL
-    PRIMARY KEY (country_id)
     FOREIGN KEY (continent_id)
         REFERENCES s_epsilon.continent(continent_id)
-)
+);
 
 CREATE TABLE s_epsilon.origin (
-    origin_id INT GENERATED ALWAYS AS IDENTITY,
+    origin_id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     latitude FLOAT NOT NULL,
     longitude FLOAT NOT NULL,
     region VARCHAR(50) NOT NULL,
     country_id INT NOT NULL,
-    PRIMARY KEY (origin_id),
     FOREIGN KEY (country_id)
         REFERENCES s_epsilon.country(country_id)
 );
 
 CREATE TABLE s_epsilon.botanist (
-    botanist_id INT GENERATED ALWAYS AS IDENTITY,
+    botanist_id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     first_name VARCHAR(25) NOT NULL,
     surname VARCHAR(25) NOT NULL,
     email VARCHAR(30) UNIQUE NOT NULL,
     phone_number VARCHAR(20) UNIQUE NOT NULL,
-    PRIMARY KEY (botanist_id)
 );
 
 CREATE TABLE s_epsilon.plant (
-    plant_id INT GENERATED ALWAYS AS IDENTITY,
-    plant_name VARCHAR(50) UNIQUE NOT NULL,
-    scientific_name VARCHAR(50) UNIQUE NOT NULL,
+    plant_id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    plant_name VARCHAR(50) NOT NULL,
+    scientific_name VARCHAR(50) NOT NULL,
     botanist_id INT NOT NULL,
     origin_id INT NOT NULL,
-    PRIMARY KEY (plant_id),
     FOREIGN KEY (botanist_id)
         REFERENCES s_epsilon.botanist(botanist_id),
     FOREIGN KEY (origin_id)
@@ -60,20 +58,18 @@ CREATE TABLE s_epsilon.plant (
 );
 
 CREATE TABLE s_epsilon.plant_condition (
-    plant_condition_id INT GENERATED ALWAYS AS IDENTITY,
-    at TIMESTAMPTZ NOT NULL,
+    plant_condition_id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    at TIMESTAMP NOT NULL,
     soil_moisture FLOAT NOT NULL,
     temperature FLOAT NOT NULL,
-    last_watered TIMESTAMPTZ NOT NULL,
     plant_id INT NOT NULL,
-    PRIMARY KEY (plant_condition_id),
     FOREIGN KEY (plant_id)
         REFERENCES s_epsilon.plant(plant_id)
 );
 
 GO
 
-INSERT INTO s_epsilon.continent(continent_name)
+INSERT INTO s_epsilon.continent (continent_name)
         VALUES
     ('America'),
     ('Africa'),
@@ -81,7 +77,7 @@ INSERT INTO s_epsilon.continent(continent_name)
     ('Europe');
 GO
 
-INSERT INTO s_epsilon.country(country_name, continent_id)
+INSERT INTO s_epsilon.country (country_name, continent_id)
         VALUES
     ('Brazil', 1),
     ('USA', 1),
@@ -99,7 +95,7 @@ INSERT INTO s_epsilon.country(country_name, continent_id)
     ('Sudan', 2),
     ('Algeria', 2),
     ('Ukraine', 4),
-    ('Libya' 2),
+    ('Libya', 2),
     ('China', 3),
     ('Chile', 1),
     ('Tanzania', 2),
@@ -135,16 +131,16 @@ INSERT INTO s_epsilon.origin(latitude, longitude, region, country_id)
     (49.68369, 8.61839, 'Bensheim', 8),
     (29.65163, -82.32483, 'Gainesville', 2),
     (36.08497, 9.37082, 'Siliana', 10),
-    (40.93121, -73.89875, "Yonkers", 2),
-    (-7.51611, 109.05389, "Wangon", 5),
-    (51.30001, 13.10984, "Oschatz", 8),
+    (40.93121, -73.89875, 'Yonkers', 2),
+    (-7.51611, 109.05389, 'Wangon', 5),
+    (51.30001, 13.10984, 'Oschatz', 8),
     (-21.44236, 27.46153, 'Tonota', 11),
     (41.15612, 1.10687, 'Reus', 12),
     (-29.2975, -51.50361, 'Carlos Barbosa', 1),
     (48.35693, 10.98461, 'Friedberg', 8),
     (52.53048, 13.29371, 'Charlottenburg-Nord', 8),
     (43.82634, 144.09638, 'Motomachi', 13),
-    (11.8659, 34.3869, 'Ar Ruseris', 'Sudan', 14),
+    (11.8659, 34.3869, 'Ar Ruseris', 14),
     (36.06386, 4.62744, 'El Achir', 15),
     (51.67822, 33.9162, 'Hlukhiv', 16),
     (43.91452, -69.96533, 'Brunswick', 2),
