@@ -54,7 +54,7 @@ def insert_data_into_database(conn, rows):
             "INSERT INTO s_epsilon.plant_condition (plant_id, at, last_watered, soil_moisture, temperature) VALUES (:plant_id, :recording_taken, :last_watered, :soil_moisture, :temperature)")
         conn.execute(query, {"plant_id": row["plant_id"],
                              "recording_taken": row["recording_taken"],
-                             "last_watered": row["last_watered"],
+                             "last_watered": row["last_watered"].replace("+00:00", ""),
                              "soil_moisture": row["soil_moisture"],
                              "temperature": row["temperature"]
                              })
