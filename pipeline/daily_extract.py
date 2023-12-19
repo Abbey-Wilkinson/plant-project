@@ -1,5 +1,6 @@
 """
-Loads all the daily data from the database, converts it to a .csv file
+Loads all the daily data from the database, 
+converts it to a .csv file
 and uploads it to the s3 bucket.
 """
 
