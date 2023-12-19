@@ -7,7 +7,8 @@ __pycache__
 .terraform
 *.tfstate
 *.tfstate.backup
-.tfvars
+*.tfvars
+
 venv
 
 # Ignore Data files
