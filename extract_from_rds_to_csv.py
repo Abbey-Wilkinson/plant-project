@@ -6,15 +6,22 @@ import pandas as pd
 from boto3 import client
 from datetime import datetime
 
+from pipeline.errors import DBConnectionError
+
 CURRENT_DATE = datetime.today()
+BAD_REQUEST = 400
 
 
 def get_database_connection():
-    print("Making new database connection")
-    engine = create_engine(
-        f"mssql+pymssql://{environ['DB_USER']}:{environ['DB_PASSWORD']}@{environ['DB_HOST']}/?charset=utf8")
+    try:
+        print("Making new database connection")
+        engine = create_engine(
+            f"mssql+pymssql://{environ['DB_USER']}:{environ['DB_PASSWORD']}@{environ['DB_HOST']}/?charset=utf8")
 
-    return engine.connect()
+        return engine.connect()
+    except ConnectionError:
+        raise DBConnectionError(
+            {'error': True, 'message': 'Connection Failed'}, BAD_REQUEST)
 
 
 def extract_from_rds(conn) -> list[tuple]:
