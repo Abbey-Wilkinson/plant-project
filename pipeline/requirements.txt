@@ -5,3 +5,4 @@ requests
 requests_mock
 sqlalchemy
 python-dotenv
+boto3
