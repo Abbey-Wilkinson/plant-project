@@ -1,4 +1,6 @@
-"""Tests for the transform script."""
+"""
+Tests for the transform script.
+"""
 
 import pandas as pd
 from pandas import Timestamp
