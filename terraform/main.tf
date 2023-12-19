@@ -6,6 +6,10 @@ data "aws_iam_role" "execution-role" {
     name = "ecsTaskExecutionRole"
 }
 
+data "aws_ecs_cluster" "c9-cluster" {
+    cluster_name = "c9-ecs-cluster"
+}
+
 # create the bucket and configure its settings
 resource "aws_s3_bucket" "plant-bucket" {
   bucket = "c9-queenbees-bucket"
@@ -91,7 +95,7 @@ resource "aws_ecs_task_definition" "rds-pipeline-task-def" {
 
 # task definition for dashboard
 resource "aws_ecs_task_definition" "dashboard-task-def" {
-    family = "c9-quuenbees-dashboard-taskdef"
+    family = "c9-queenbees-dashboard-taskdef"
     network_mode = "awsvpc"
     requires_compatibilities = ["FARGATE"]
     container_definitions = jsonencode([
@@ -117,7 +121,8 @@ resource "aws_ecs_task_definition" "dashboard-task-def" {
     cpu = 1024
 }
 
-resource "aws_security_group" "allow-dashboard-access" {
+# security group to allow inboung traffic on port 8501 for the dashboard
+resource "aws_security_group" "dashboard-sg" {
   name        = "c9-queenbees-dashboard-sg"
   description = "Allow outbound traffic for port 8501, so users can see the dashboard"
   vpc_id      = "vpc-04423dbb18410aece"
@@ -135,5 +140,18 @@ resource "aws_security_group" "allow-dashboard-access" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
 
+# start ECS service for the dashboard
+resource "aws_ecs_service" "dashboard-service" {
+    name = "c9-queenbees-dashboard-service"
+    cluster = data.aws_ecs_cluster.c9-cluster.id
+    task_definition = aws_ecs_task_definition.dashboard-task-def.arn
+    desired_count = 1
+    launch_type = "FARGATE"
+    network_configuration {
+      subnets = ["subnet-0d0b16e76e68cf51b", "subnet-081c7c419697dec52", "subnet-02a00c7be52b00368"]
+      security_groups = [aws_security_group.dashboard-sg.id]
+      assign_public_ip = true
+    }
 }
