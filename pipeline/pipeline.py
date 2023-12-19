@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     conn = get_database_connection()
 
-    rows = df.to_dict("records")
+    rows = df.to_dict('records')
 
     insert_data_into_database(conn, rows)
 
