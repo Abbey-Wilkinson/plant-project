@@ -155,3 +155,49 @@ resource "aws_ecs_service" "dashboard-service" {
       assign_public_ip = true
     }
 }
+
+# create a role for the EventBridge schedules
+resource "aws_iam_role" "schedule-role" {
+    name = "c9-angelo-terraform-schedule-role"
+    assume_role_policy = jsonencode({
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": "scheduler.amazonaws.com"
+                },
+                "Action": "sts:AssumeRole",
+                "Condition": {
+                    "StringEquals": {
+                        "aws:SourceAccount": "129033205317"
+                    }
+                }
+            }
+        ]
+    })
+}
+
+# create EventBridge schedule for plant pipeline
+resource "aws_scheduler_schedule" "plant-pipeline-schedule" {
+    name       = "c9-queenbees-plant-pipeline-schedule"
+    schedule_expression = "cron(* * * * ? *)"
+    flexible_time_window {
+        mode = "OFF"
+    }
+    target {
+        arn      = data.aws_ecs_cluster.c9-cluster.arn
+        role_arn = aws_iam_role.schedule-role.arn
+        ecs_parameters {
+          task_definition_arn = aws_ecs_task_definition.plant-pipeline-task-def.arn
+          task_count = 1
+          launch_type = "FARGATE"
+          platform_version = "LATEST"
+          network_configuration {
+            subnets = [ "subnet-0d0b16e76e68cf51b", "subnet-081c7c419697dec52", "subnet-02a00c7be52b00368" ]
+            security_groups = [ "sg-020697b6514174b72" ]
+            assign_public_ip = true
+          }
+        }
+    }
+}

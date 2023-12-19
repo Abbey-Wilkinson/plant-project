@@ -7,8 +7,10 @@ __pycache__
 .terraform
 *.tfstate
 *.tfstate.backup
-.tfvars
+*.tfvars
+
 venv
+Dockerfile
 
 # Ignore Data files
 *.json
