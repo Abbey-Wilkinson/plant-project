@@ -1,4 +1,6 @@
-"""Script containing all of the custom errors."""
+"""
+Script containing all of the custom errors.
+"""
 
 
 class APIError(Exception):
