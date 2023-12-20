@@ -38,29 +38,34 @@ def get_header_metrics(plants: DataFrame) -> None:
     """
     Gets the main headers and displays them.
     """
-    head_cols = st.columns(3)
+    head_cols = st.columns(4)
     with head_cols[0]:
-        st.metric("Total Number of Plants :herb:",
-                  len(selected_plants))
+        st.metric("Total Number of Plants in Museum :herb:",
+                  len(plants["plant_name"].unique()))
     with head_cols[1]:
+        st.metric("Total Number of Plants Selected :herb:",
+                  len(selected_plants))
+    with head_cols[2]:
         st.metric("Average Soil Moisture: :potted_plant:",
                   get_average_soil_moisture(plants[name_in_selected_plants]))
-    with head_cols[2]:
+    with head_cols[3]:
         st.metric("Average Temperature: :thermometer:",
                   f'{get_average_temperature(plants[name_in_selected_plants])}°C')
 
 
-def get_main_body() -> None:
+def get_main_body(plants) -> None:
     """
     Gets the main body charts and displays them.
     """
     body_cols = st.columns(2)
 
     with body_cols[0]:
-        pass
+        st.altair_chart(get_latest_temperature_readings(
+            plants[name_in_selected_plants], sort_ascending_temp), use_container_width=True)
 
     with body_cols[1]:
-        pass
+        st.altair_chart(get_latest_soil_moisture_readings(
+            plants[name_in_selected_plants], sort_ascending_moisture), use_container_width=True)
 
 
 if __name__ == "__main__":
@@ -80,6 +85,14 @@ if __name__ == "__main__":
 
     critical_temp_plants = get_names_of_critical_temp_plants(plants)
 
+    st.sidebar.subheader("Latest Temperature Readings:")
+    sort_ascending_temp = st.sidebar.checkbox(
+        "Ascending Temperature", True)
+
+    st.sidebar.subheader("Latest Soil Moisture Percentage Readings")
+    sort_ascending_moisture = st.sidebar.checkbox(
+        "Ascending Soil Moisture Percentage", True)
+
     if critical_temp_plants:
 
         get_temperature_warning_metrics(critical_temp_plants)
@@ -95,6 +108,6 @@ if __name__ == "__main__":
 
         get_header_metrics(plants)
 
-        get_main_body()
+        get_main_body(plants)
 
     # st.table(plants)
