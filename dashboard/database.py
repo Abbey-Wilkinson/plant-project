@@ -1,4 +1,6 @@
-"""Establishes a connection to the database."""
+"""
+Establishes a connection to the database.
+"""
 
 from os import environ
 
