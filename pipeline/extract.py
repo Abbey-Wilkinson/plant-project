@@ -70,6 +70,9 @@ def connect_to_plant_ids(total_num_plants: int, api_plants: str):
 
                 plant_data.append(wanted_data)
 
+            else:
+                raise HTTPError
+
         return plant_data
 
     except ConnectionError as exc:
