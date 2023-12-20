@@ -48,6 +48,17 @@ def extract_from_rds(db_conn: Connection) -> list[tuple]:
     return res
 
 
+def wipe_from_rds(db_conn: Connection) -> None:
+    """
+    Wipes all the plant condition entries from the epsilon schema.
+    """
+
+    db_conn.execute(sql.text("USE plants;"))
+
+    query = sql.text("DELETE * FROM s_epsilon.plant_condition;")
+    db_conn.execute(query)
+
+
 def create_condition_dicts(conditions: list[tuple]) -> list[dict]:
     """
     Loops through every plant condition entry and converts them into a dataframe.
@@ -101,3 +112,4 @@ if __name__ == "__main__":
             plant_conditions_dicts, s3, "c9-queenbees-bucket")
     except KeyError as error:
         print("Can't connect to AWS")
+        wipe_from_rds()
