@@ -36,6 +36,8 @@ def clean_last_watered_data(plants_df: pd.DataFrame) -> pd.DataFrame:
 
     plants_df["last_watered"] = pd.to_datetime(
         plants_df["last_watered"], errors="coerce")
+    plants_df["last_watered"] = plants_df["last_watered"].str.replace(
+        "+00:00", "")
 
     plants_df = plants_df.dropna()
 

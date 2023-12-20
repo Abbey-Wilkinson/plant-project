@@ -60,7 +60,7 @@ def insert_data_into_database(db_conn, df_rows):
             "VALUES (:plant_id, :recording_taken, :last_watered, :soil_moisture, :temperature)")
         db_conn.execute(query, {"plant_id": row["plant_id"],
                                 "recording_taken": row["recording_taken"],
-                                "last_watered": row["last_watered"].replace("+00:00", ""),
+                                "last_watered": row["last_watered"],
                                 "soil_moisture": row["soil_moisture"],
                                 "temperature": row["temperature"]
                                 })
