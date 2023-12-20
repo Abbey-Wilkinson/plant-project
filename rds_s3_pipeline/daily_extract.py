@@ -91,7 +91,7 @@ def convert_to_csv_and_upload(plant_conditions: list[dict], s3_client: client, b
     """
 
     df = pd.DataFrame(plant_conditions)
-    df.to_csv('./plant_conditions.csv')
+    df.to_csv('./plant_conditions.csv', index=False)
 
     s3_client.upload_file("./plant_conditions.csv", bucket,
                           f"{CURRENT_DATE.year}-{CURRENT_DATE.month}/{CURRENT_DATE.day}.csv")
