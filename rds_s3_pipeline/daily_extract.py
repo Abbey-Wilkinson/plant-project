@@ -26,12 +26,13 @@ def get_database_connection() -> Connection:
     try:
         print("Making new database connection")
         engine = create_engine(
-            f"mssql+pymssql://{environ['DB_USER']}:{environ['DB_PASSWORD']}@{environ['DB_HOST']}/?charset=utf8")
+            f"mssql+pymssql://{environ['DB_USER']}:{environ['DB_PASSWORD']}" +
+            f"@{environ['DB_HOST']}/?charset=utf8")
 
         return engine.connect()
-    except ConnectionError:
+    except ConnectionError as exc:
         raise DBConnectionError(
-            {'error': True, 'message': 'Connection Failed'}, BAD_REQUEST)
+            {'error': True, 'message': 'Connection Failed'}, BAD_REQUEST) from exc
 
 
 def extract_from_rds(db_conn: Connection) -> list[tuple]:

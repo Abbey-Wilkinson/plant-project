@@ -2,11 +2,9 @@
 Script that runs the entire pipeline.
 """
 
-from os import environ
 from time import perf_counter
 
 from dotenv import load_dotenv
-import pandas as pd
 
 from extract import get_number_of_plants, connect_to_plant_ids, convert_to_pd_dataframe
 from transform import (clean_last_watered_data, clean_recording_taken_data,

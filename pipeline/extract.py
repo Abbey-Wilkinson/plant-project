@@ -4,7 +4,7 @@ Extract script for the plants pipeline.
 from time import perf_counter
 
 import requests
-from requests.exceptions import ConnectionError, Timeout, HTTPError
+from requests.exceptions import Timeout, HTTPError
 import pandas as pd
 
 from errors import APIError
@@ -33,18 +33,18 @@ def get_number_of_plants(api_index: str):
         # and go to 51 since loops aren't inclusive on the last number
         return number_of_plants + LOOP_INCLUSIVE_NUMBER
 
-    except KeyError:
+    except KeyError as exc:
         raise APIError({"error": True,
-                        "message": "No key 'plants_on_display' found."}, BAD_REQUEST)
-    except ConnectionError:
+                        "message": "No key 'plants_on_display' found."}, BAD_REQUEST) from exc
+    except ConnectionError as exc:
         raise APIError({"error": True,
-                        "message": "Connection failed."}, BAD_REQUEST)
-    except Timeout:
+                        "message": "Connection failed."}, BAD_REQUEST) from exc
+    except Timeout as exc:
         raise APIError({"error": True,
-                        "message": "Timed out."}, REQUEST_TIMED_OUT)
-    except HTTPError:
+                        "message": "Timed out."}, REQUEST_TIMED_OUT) from exc
+    except HTTPError as exc:
         raise APIError({"error": True,
-                        "message": "URL invalid."}, PAGE_NOT_FOUND)
+                        "message": "URL invalid."}, PAGE_NOT_FOUND) from exc
 
 
 def connect_to_plant_ids(total_num_plants: int, api_plants: str):
@@ -53,12 +53,12 @@ def connect_to_plant_ids(total_num_plants: int, api_plants: str):
     """
     try:
 
-        plants = []
-        for id in range(STARTING_ID, total_num_plants):
-            response = requests.get(f'{api_plants}{id}', timeout=TIMEOUT)
+        plant_data = []
+        for plant_id in range(STARTING_ID, total_num_plants):
+            response = requests.get(f'{api_plants}{plant_id}', timeout=TIMEOUT)
 
             if response.status_code == SUCCESS_CODE:
-                print(id)
+                print(plant_id)
                 data = response.json()
                 wanted_data = {
                     "plant_id": data["plant_id"],
@@ -68,29 +68,29 @@ def connect_to_plant_ids(total_num_plants: int, api_plants: str):
                     "temperature": data["temperature"]
                 }
 
-                plants.append(wanted_data)
+                plant_data.append(wanted_data)
 
-        return plants
+        return plant_data
 
-    except ConnectionError:
+    except ConnectionError as exc:
         raise APIError({"error": True,
-                        "message": "Connection failed."}, BAD_REQUEST)
-    except Timeout:
+                        "message": "Connection failed."}, BAD_REQUEST) from exc
+    except Timeout as exc:
         raise APIError({"error": True,
-                        "message": "Timed out."}, REQUEST_TIMED_OUT)
-    except HTTPError:
+                        "message": "Timed out."}, REQUEST_TIMED_OUT) from exc
+    except HTTPError as exc:
         raise APIError({"error": True,
-                        "message": "URL invalid."}, PAGE_NOT_FOUND)
+                        "message": "URL invalid."}, PAGE_NOT_FOUND) from exc
 
 
-def convert_to_pd_dataframe(plants:  list[dict]) -> pd.DataFrame:
+def convert_to_pd_dataframe(all_plant_data: list[dict]) -> pd.DataFrame:
     """
-    Converts the list of all plant dictionaries into a pandas dataframe.
+    Converts the list of all plant dictionaries into a pandas DataFrame.
     """
 
-    df = pd.DataFrame(plants)
-    df = df.fillna("N/A")
-    return df
+    plants_df = pd.DataFrame(all_plant_data)
+    plants_df = plants_df.fillna("N/A")
+    return plants_df
 
 
 if __name__ == "__main__":
@@ -101,10 +101,10 @@ if __name__ == "__main__":
     plants_time = perf_counter()
 
     print("Getting total number of plants...")
-    total_num_plants = get_number_of_plants(API_INDEX)
+    sum_of_plants = get_number_of_plants(API_INDEX)
 
     print("Getting plant data for each plant...")
-    plants = connect_to_plant_ids(total_num_plants, API_PLANTS)
+    plants = connect_to_plant_ids(sum_of_plants, API_PLANTS)
 
     print("Converting into DataFrame...")
     df = convert_to_pd_dataframe(plants)
