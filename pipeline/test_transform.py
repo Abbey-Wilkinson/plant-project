@@ -17,7 +17,8 @@ def test_last_watered_all_datetime():
     """
 
     filled_data = {"last_watered": ["Mon, 18 Dec 2023 13:54:32 GMT",
-                                    "Tue, 19 Dec 2023 9:54:32 GMT"], "soil_moisture": [33.243289352, 29.234892343]}
+                                    "Tue, 19 Dec 2023 9:54:32 GMT"],
+                   "soil_moisture": [33.243289352, 29.234892343]}
     df = pd.DataFrame(data=filled_data).reset_index(drop=True)
 
     df = clean_last_watered_data(df)
@@ -80,7 +81,8 @@ def test_recording_taken_all_datetime():
     """
 
     filled_data = {"recording_taken": ["2023-12-19 11:00:45",
-                                       "2023-12-19 11:00:46"], "soil_moisture": [33.243289352, 29.234892343]}
+                                       "2023-12-19 11:00:46"],
+                   "soil_moisture": [33.243289352, 29.234892343]}
     df = pd.DataFrame(data=filled_data).reset_index(drop=True)
 
     df = clean_recording_taken_data(df)
