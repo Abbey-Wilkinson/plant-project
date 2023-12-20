@@ -19,7 +19,7 @@ def get_header_metrics() -> None:
                   len(selected_plants))
     with head_cols[1]:
         st.metric("Average Soil Moisture: :potted_plant:",
-                  get_average_soil_moisture(plants))
+                  get_average_soil_moisture(plants[name_in_selected_plants]))
 
 
 if __name__ == "__main__":
@@ -35,6 +35,8 @@ if __name__ == "__main__":
     selected_plants = st.sidebar.multiselect("Selected Plants",
                                              plants["plant_name"].unique(),
                                              default=plants["plant_name"].unique())
+
+    name_in_selected_plants = plants["plant_name"].isin(selected_plants)
 
     if selected_plants:
 
