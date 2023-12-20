@@ -53,7 +53,7 @@ def get_latest_soil_moisture_readings(plants: DataFrame, sort_ascending):
         y=alt.Y('Plant Name:N', sort=sort_order),
         x=alt.X('Soil Moisture Percentage:Q'),
         tooltip=['Plant Name:N', 'Soil Moisture Percentage:Q'],
-        color=alt.Color('Plant Name:N', legend=None).scale(scheme='greens')
+        color=alt.Color('Plant Name:N', legend=None).scale(scheme='browns')
     ).properties(
         title='Latest Soil Moisture Percentage of Plants',
         width=600
