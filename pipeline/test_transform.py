@@ -24,8 +24,8 @@ def test_last_watered_all_datetime():
     df = clean_last_watered_data(df)
 
     dict_df = df.to_dict()
-    assert dict_df == {"last_watered": {0: Timestamp("2023-12-18 13:54:32", tz="GMT"),
-                                        1: Timestamp("2023-12-19 09:54:32", tz="GMT")},
+    assert dict_df == {"last_watered": {0: Timestamp("2023-12-18 13:54:32"),
+                                        1: Timestamp("2023-12-19 09:54:32")},
                        "soil_moisture": {0: 33.243289352, 1: 29.234892343}}
 
 
@@ -41,7 +41,7 @@ def test_last_watered_incorrect_values():
     df = clean_last_watered_data(df)
 
     dict_df = df.to_dict()
-    assert dict_df == {"last_watered": {0: Timestamp("2023-12-18 13:54:32", tz="GMT")},
+    assert dict_df == {"last_watered": {0: Timestamp("2023-12-18 13:54:32")},
                        "soil_moisture": {0: 33.243289352}}
 
 
