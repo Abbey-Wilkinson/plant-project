@@ -25,8 +25,8 @@ The files in this folder are used to connect to the database, make visualisation
 - `database.py` : Makes a connection to the remote database and joins tables via an sql query. 
 - `Dockerfile` : This file contains instructions to create a new docker image that runs `app.py`.
 - `app.py` : Imports functions from the below and creates the streamlit dashboard layout.    
-  - `utilities.py` : loads all data and merges tables Whilst getting important data.\
-  - `visualisations.py` : Creates graphs and tables for the streamlit dashboard.\
+  - `utilities.py` : loads all data and merges tables Whilst getting important data.
+  - `visualisations.py` : Creates graphs and tables for the streamlit dashboard.
   - `notebook.ipynb` : Used to create test queries before implementation to the app. 
 
 ## Wireframe Design 
