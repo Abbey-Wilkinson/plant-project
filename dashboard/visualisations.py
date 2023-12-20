@@ -5,6 +5,8 @@ import altair as alt
 import pandas as pd
 from pandas import DataFrame
 
+from utilities import get_latest_data
+
 
 # [TODO]: Create bar chart for below function.
 
