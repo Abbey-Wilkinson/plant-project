@@ -1,0 +1,5 @@
+pandas
+sqlalchemy
+python-dotenv
+boto3
+pymssql

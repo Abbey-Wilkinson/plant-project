@@ -5,8 +5,8 @@ and uploads it to the s3 bucket.
 """
 
 from os import environ, remove
-
 from datetime import datetime
+
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, sql, Connection
 import pandas as pd

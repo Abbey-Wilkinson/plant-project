@@ -1,10 +1,11 @@
 """
 Extract script for the plants pipeline.
 """
+from time import perf_counter
+
 import requests
 from requests.exceptions import ConnectionError, Timeout, HTTPError
 import pandas as pd
-from time import perf_counter
 
 from errors import APIError
 
