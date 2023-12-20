@@ -9,16 +9,29 @@ from database import get_database_connection, load_all_plant_data
 from utilities import (get_selected_plants,
                        get_average_soil_moisture,
                        get_average_temperature,
-                       get_names_of_selected_plants)
+                       get_names_of_selected_plants,
+                       get_names_of_critical_temp_plants,
+                       get_names_of_critical_soil_moisture_plants)
+from visualisations import (get_latest_temperature_readings,
+                            get_latest_soil_moisture_readings,
+                            get_temperature_over_time,
+                            get_soil_moisture_over_time)
 
 
-# [TODO]: Implement Warning Features for critical plants.
-
-def get_warning_metrics() -> None:
+def get_temperature_warning_metrics(critical_temp_plants) -> None:
     """
-    Gets the main warnings and displays them at the top.
+    Gets the main temperature warnings and displays them at the top.
     """
-    st.warning('This is a warning', icon="⚠️")
+    st.warning(
+        f'WARNING! The following plants are in CRITICAL TEMPERATURE CONDITION: {critical_temp_plants}', icon="⚠️")
+
+
+def get_soil_moisture_warning_metrics(critical_moisture_plants) -> None:
+    """
+    Gets the main soil moisture warnings and displays them at the top.
+    """
+    st.warning(
+        f'WARNING! The following plants are in CRITICAL SOIL MOISTURE CONDITION: {critical_moisture_plants}', icon="⚠️")
 
 
 def get_header_metrics(plants: DataFrame) -> None:
@@ -37,6 +50,19 @@ def get_header_metrics(plants: DataFrame) -> None:
                   f'{get_average_temperature(plants[name_in_selected_plants])}°C')
 
 
+def get_main_body() -> None:
+    """
+    Gets the main body charts and displays them.
+    """
+    body_cols = st.columns(2)
+
+    with body_cols[0]:
+        pass
+
+    with body_cols[1]:
+        pass
+
+
 if __name__ == "__main__":
 
     load_dotenv()
@@ -52,8 +78,23 @@ if __name__ == "__main__":
     name_in_selected_plants = get_names_of_selected_plants(
         plants, selected_plants)
 
+    critical_temp_plants = get_names_of_critical_temp_plants(plants)
+
+    if critical_temp_plants:
+
+        get_temperature_warning_metrics(critical_temp_plants)
+
+    critical_soil_moisture_plants = get_names_of_critical_soil_moisture_plants(
+        plants)
+
+    if critical_soil_moisture_plants:
+
+        get_soil_moisture_warning_metrics(critical_soil_moisture_plants)
+
     if selected_plants:
 
         get_header_metrics(plants)
 
-    st.table(plants)
+        get_main_body()
+
+    # st.table(plants)
