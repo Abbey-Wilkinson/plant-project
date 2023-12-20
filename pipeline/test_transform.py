@@ -17,14 +17,15 @@ def test_last_watered_all_datetime():
     """
 
     filled_data = {"last_watered": ["Mon, 18 Dec 2023 13:54:32 GMT",
-                                    "Tue, 19 Dec 2023 9:54:32 GMT"], "soil_moisture": [33.243289352, 29.234892343]}
+                                    "Tue, 19 Dec 2023 9:54:32 GMT"],
+                   "soil_moisture": [33.243289352, 29.234892343]}
     df = pd.DataFrame(data=filled_data).reset_index(drop=True)
 
     df = clean_last_watered_data(df)
 
     dict_df = df.to_dict()
-    assert dict_df == {"last_watered": {0: Timestamp("2023-12-18 13:54:32+0000", tz="GMT"),
-                                        1: Timestamp("2023-12-19 09:54:32+0000", tz="GMT")},
+    assert dict_df == {"last_watered": {0: Timestamp("2023-12-18 13:54:32"),
+                                        1: Timestamp("2023-12-19 09:54:32")},
                        "soil_moisture": {0: 33.243289352, 1: 29.234892343}}
 
 
@@ -40,7 +41,7 @@ def test_last_watered_incorrect_values():
     df = clean_last_watered_data(df)
 
     dict_df = df.to_dict()
-    assert dict_df == {"last_watered": {0: Timestamp("2023-12-18 13:54:32+0000", tz="GMT")},
+    assert dict_df == {"last_watered": {0: Timestamp("2023-12-18 13:54:32")},
                        "soil_moisture": {0: 33.243289352}}
 
 
@@ -80,7 +81,8 @@ def test_recording_taken_all_datetime():
     """
 
     filled_data = {"recording_taken": ["2023-12-19 11:00:45",
-                                       "2023-12-19 11:00:46"], "soil_moisture": [33.243289352, 29.234892343]}
+                                       "2023-12-19 11:00:46"],
+                   "soil_moisture": [33.243289352, 29.234892343]}
     df = pd.DataFrame(data=filled_data).reset_index(drop=True)
 
     df = clean_recording_taken_data(df)
