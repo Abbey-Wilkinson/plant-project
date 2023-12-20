@@ -12,7 +12,7 @@ def get_average_soil_moisture(df: pd.DataFrame) -> numpy.float64:
     """
     Returns the average soil moisture from all of the plants combined.
     """
-    return df["soil_moisture"].mean().round(2)
+    return df["soil_moisture"].astype(float).mean().round(2)
 
 
 if __name__ == "__main__":
