@@ -1,4 +1,6 @@
-# Plants Project - Queen Bees 
+# Museum Plant Monitoring Project
+This project is a case study that aims to provide a means of monitoring the health of a range of plants in a museum over time. Currently, the museum has an API that reports only the **current** health of a plant. Developing a pipeline to extract the data from the API and storing it in long term storage allows theoretical gardeners to be warned of any problems that may arise through the analysis of gathered data. This is what the project ultimately aims to address: the extraction of the museum data, long term storage of the data, and data visualisations to provide insights to the plants' wellbeing.
+
 
 ## Cloud architecture
 A high level overview of the cloud architecture can be seen below:
@@ -21,7 +23,7 @@ One final feature shown here is the dashboard:
 For this project, a dashboard is provided using Streamlit. The dashboard here is run as a service within an ECS cluster. The dashboard would read from the RDS so that it can obtain real-time data and it would also read from the S3 obtain historical data as well.
 
 ## ERD
-A ERD which clearly describes the tables in the schema and the data stored in each table:
+An ERD which clearly describes the tables in the schema and the data stored in each table:
 
 ![ERD](images/ERD.png)
 
