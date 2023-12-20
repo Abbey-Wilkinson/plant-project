@@ -6,3 +6,4 @@ altair
 altair_viewer
 python-dotenv
 sqlalchemy
+ipykernel
