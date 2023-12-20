@@ -19,3 +19,20 @@ One final feature shown here is the dashboard:
 
 #### Dashboard
 For this project, a dashboard is provided using Streamlit. The dashboard here is run as a service within an ECS cluster. The dashboard would read from the RDS so that it can obtain real-time data and it would also read from the S3 obtain historical data as well.
+
+## ERD
+A ERD which clearly describes the tables in the schema and the data stored in each table:
+
+![ERD](images/ERD.png)
+
+#### The Plant Condition Table
+This table is where the data will be uploaded to and will contain all the important information about the plant's health. This includes the soil moisture, the temperature, the time it was last watered and the time when the data was inputted.
+
+#### The Plant Table
+This table will contain all the details about each plant including the plant's common, scientific name, a link to the origin table and a link to the botanist table. This will allow for the plant to be identified when tracking it's condition.
+
+#### The Botanist Table
+This table will contain all the details about the botanists responsible for looking after the plants. This table will include all details of the botanist so they can be contacted if any of their plants become unhealthy.
+
+#### The Origin Table
+This table will contain all the details about the plants' origins including the latitude, longitude and the name of the region where the plant was found. This table also includes a link to the country table which also links to the continent table.
