@@ -3,6 +3,7 @@ Tests for the extract script.
 """
 
 import pytest
+
 from extract import get_number_of_plants, connect_to_plant_ids
 from errors import APIError
 
