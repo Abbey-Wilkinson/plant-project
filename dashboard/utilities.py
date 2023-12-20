@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 import numpy
 import pandas as pd
 
-
 from database import get_database_connection, load_all_plant_data
 
 
