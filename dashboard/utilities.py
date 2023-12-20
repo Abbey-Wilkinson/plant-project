@@ -9,14 +9,21 @@ from streamlit import sidebar
 from database import get_database_connection, load_all_plant_data
 
 
+MIN_SOIL_MOISTURE = 15
+MIN_TEMP = 7
+MAX_TEMP = 25
+FIRST_PLANT = 0
+DEFAULT_PLANT_NUM = 10
+
+
 def get_selected_plants(plants: DataFrame) -> list:
     """
     Returns the selected plants in the sidebar.
     By Default this returns all plants.
     """
     return sidebar.multiselect("Selected Plants",
-                               plants["plant_name"].unique(),
-                               default=plants["plant_name"].unique())
+                               list(plants["plant_name"].unique()),
+                               default=plants["plant_name"].unique()[FIRST_PLANT:DEFAULT_PLANT_NUM])
 
 
 def get_names_of_selected_plants(plants: DataFrame, selected_plants: list) -> Series:
@@ -40,13 +47,66 @@ def get_average_temperature(df: DataFrame) -> float64:
     return df["temperature"].astype(float).mean().round(2)
 
 
-# [TODO]: Get the plants with a temperature above 30 degrees (in critical condition).
+def get_latest_data(df: DataFrame) -> DataFrame:
+    """
+    Returns the latest data of each plant id.
+    """
+    latest_indices = df.groupby('plant_id')['at'].idxmax()
 
-def get_plants_with_temperature_above_30_degrees(df: DataFrame):
+    latest_conditions = df.loc[latest_indices]
+
+    return latest_conditions
+
+
+def get_all_critical_plants_in_str_format(critical_plants, value: str, unit: str) -> str:
     """
-    Returns all of the plants with a current temperature over 30 degrees.
+    Returns a str of the plants name and their corresponding value.
     """
-    pass
+    critical_plants[value] = critical_plants[value].round(
+        2)
+    critical_plants = critical_plants[[
+        "plant_name", value]].reset_index(drop=True)
+
+    critical_plants_dicts = critical_plants.to_dict('records')
+
+    plants = []
+
+    for plant in critical_plants_dicts:
+        plants.append(f'{plant["plant_name"]} ({plant[value]}{unit})')
+
+    joined_plants = ", \n\n".join(plant for plant in plants)
+    return joined_plants
+
+
+def get_names_of_critical_temp_plants(df: DataFrame) -> str:
+    """
+    Returns the names and the temperature of the critical plants.
+    """
+    latest_data = get_latest_data(df)
+
+    # Gets plants in critical condition both too high and too low.
+    critical_plants = latest_data[(
+        latest_data['temperature'] >= MAX_TEMP) | (latest_data['temperature'] <= MIN_TEMP)]
+
+    joined_plants = get_all_critical_plants_in_str_format(
+        critical_plants, "temperature", "°C")
+
+    return joined_plants
+
+
+def get_names_of_critical_soil_moisture_plants(df: DataFrame) -> str:
+    """
+    Returns the names and the temperature of the critical plants.
+    """
+    latest_data = get_latest_data(df)
+
+    critical_plants = latest_data[latest_data['soil_moisture']
+                                  <= MIN_SOIL_MOISTURE]
+
+    joined_plants = get_all_critical_plants_in_str_format(
+        critical_plants, "soil_moisture", "%")
+
+    return joined_plants
 
 
 if __name__ == "__main__":
@@ -59,10 +119,8 @@ if __name__ == "__main__":
 
     average_soil_moisture = get_average_soil_moisture(plants)
 
-    print(type(average_soil_moisture))
-
     selected_plants = get_selected_plants(plants)
-    print(type(selected_plants))
 
-    names = get_names_of_selected_plants(selected_plants)
-    print(type(names))
+    names = get_names_of_selected_plants(plants, selected_plants)
+
+    names_of_critical_plants = get_names_of_critical_temp_plants(plants)
