@@ -40,13 +40,66 @@ def get_average_temperature(df: DataFrame) -> float64:
     return df["temperature"].astype(float).mean().round(2)
 
 
-# [TODO]: Get the plants with a temperature above 30 degrees (in critical condition).
+def get_latest_data(df: DataFrame):
+    """
+    Returns the latest data of each plant id.
+    """
+    latest_indices = df.groupby('plant_id')['at'].idxmax()
 
-def get_plants_with_temperature_above_30_degrees(df: DataFrame):
+    latest_conditions = df.loc[latest_indices]
+
+    return latest_conditions
+
+
+def get_names_of_critical_temp_plants(df: DataFrame):
     """
-    Returns all of the plants with a current temperature over 30 degrees.
+    Returns the names and the temperature of the critical plants.
     """
-    pass
+    latest_data = get_latest_data(df)
+
+    # Gets plants in critical condition both too high and too low.
+    critical_plants = latest_data[(
+        latest_data['temperature'] >= 14) | (latest_data['temperature'] <= 7)]
+    critical_plants["temperature"] = critical_plants["temperature"].round(
+        2)
+    critical_plants = critical_plants[[
+        "plant_name", "temperature"]].reset_index(drop=True)
+    critical_plants_dicts = critical_plants.to_dict('records')
+
+    plants = []
+
+    for plant in critical_plants_dicts:
+        plants.append(f'{plant["plant_name"]} ({plant["temperature"]}°C)')
+
+    joined_plants = ", \n".join(plant for plant in plants)
+
+    return joined_plants
+
+
+def get_names_of_critical_soil_moisture_plants(df: DataFrame):
+    """
+    Returns the names and the temperature of the critical plants.
+    """
+    latest_data = get_latest_data(df)
+
+    critical_plants = latest_data[(
+        latest_data['soil_moisture'] >= 99) | (latest_data['soil_moisture'] <= 25)]
+
+    critical_plants["soil_moisture"] = critical_plants["soil_moisture"].round(
+        2)
+    critical_plants = critical_plants[[
+        "plant_name", "soil_moisture"]].reset_index(drop=True)
+
+    critical_plants_dicts = critical_plants.to_dict('records')
+
+    plants = []
+
+    for plant in critical_plants_dicts:
+        plants.append(f'{plant["plant_name"]} ({plant["soil_moisture"]})')
+
+    joined_plants = ", \n".join(plant for plant in plants)
+
+    return joined_plants
 
 
 if __name__ == "__main__":
@@ -59,10 +112,8 @@ if __name__ == "__main__":
 
     average_soil_moisture = get_average_soil_moisture(plants)
 
-    print(type(average_soil_moisture))
-
     selected_plants = get_selected_plants(plants)
-    print(type(selected_plants))
 
-    names = get_names_of_selected_plants(selected_plants)
-    print(type(names))
+    names = get_names_of_selected_plants(plants, selected_plants)
+
+    names_of_critical_plants = get_names_of_critical_temp_plants(plants)
