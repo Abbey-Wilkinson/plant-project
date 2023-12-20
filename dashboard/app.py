@@ -1,18 +1,30 @@
 """
 Streamlit app for plants.
 """
-from os import environ
-
 from dotenv import load_dotenv
-import pandas as pd
+from pandas import DataFrame
 import streamlit as st
 
 from database import get_database_connection, load_all_plant_data
-from utilities import get_average_soil_moisture
+from utilities import (get_selected_plants,
+                       get_average_soil_moisture,
+                       get_average_temperature,
+                       get_names_of_selected_plants)
 
 
-def get_header_metrics() -> None:
-    """Gets the main headers and displays them."""
+# [TODO]: Implement Warning Features for critical plants.
+
+def get_warning_metrics() -> None:
+    """
+    Gets the main warnings and displays them at the top.
+    """
+    st.warning('This is a warning', icon="⚠️")
+
+
+def get_header_metrics(plants: DataFrame) -> None:
+    """
+    Gets the main headers and displays them.
+    """
     head_cols = st.columns(3)
     with head_cols[0]:
         st.metric("Total Number of Plants :herb:",
@@ -20,6 +32,9 @@ def get_header_metrics() -> None:
     with head_cols[1]:
         st.metric("Average Soil Moisture: :potted_plant:",
                   get_average_soil_moisture(plants[name_in_selected_plants]))
+    with head_cols[2]:
+        st.metric("Average Temperature: :thermometer:",
+                  f'{get_average_temperature(plants[name_in_selected_plants])}°C')
 
 
 if __name__ == "__main__":
@@ -32,14 +47,13 @@ if __name__ == "__main__":
 
     st.title("Plant Sensors Dashboard")
 
-    selected_plants = st.sidebar.multiselect("Selected Plants",
-                                             plants["plant_name"].unique(),
-                                             default=plants["plant_name"].unique())
+    selected_plants = get_selected_plants(plants)
 
-    name_in_selected_plants = plants["plant_name"].isin(selected_plants)
+    name_in_selected_plants = get_names_of_selected_plants(
+        plants, selected_plants)
 
     if selected_plants:
 
-        get_header_metrics()
+        get_header_metrics(plants)
 
     st.table(plants)
