@@ -20,8 +20,8 @@ def get_database_connection():
     """
 
     try:
-        engine = create_engine(f"mssql+pymssql://{environ['DB_USER']}:{environ['DB_PASSWORD']}" +
-                               f"@{environ['DB_HOST']}/?charset=utf8")
+        engine = create_engine(
+            f"mssql+pymssql://{environ['DB_USER']}:{environ['DB_PASSWORD']}@{environ['DB_HOST']}/?charset=utf8")
 
         return engine.connect()
 

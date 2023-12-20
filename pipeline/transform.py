@@ -21,7 +21,7 @@ def clean_recording_taken_data(plants_df: pd.DataFrame) -> pd.DataFrame:
     plants_df["recording_taken_bool"] = pd.to_datetime(
         plants_df["recording_taken"], errors="coerce").notna()
     plants_df = plants_df.drop(
-        plants_df[plants_df.recording_taken_bool is False].index)
+        plants_df[plants_df.recording_taken_bool == False].index)
 
     plants_df = plants_df.drop(columns=["recording_taken_bool"])
 
@@ -36,8 +36,11 @@ def clean_last_watered_data(plants_df: pd.DataFrame) -> pd.DataFrame:
 
     plants_df["last_watered"] = pd.to_datetime(
         plants_df["last_watered"], errors="coerce")
-    plants_df["last_watered"] = plants_df["last_watered"].str.replace(
-        "+00:00", "")
+
+    plants_df["last_watered"] = plants_df["last_watered"].dt.strftime(
+        "%Y-%m-%d %H:%M:%S")
+
+    plants_df["last_watered"] = pd.to_datetime(plants_df["last_watered"])
 
     plants_df = plants_df.dropna()
 
