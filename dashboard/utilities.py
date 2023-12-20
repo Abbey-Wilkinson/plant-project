@@ -19,7 +19,7 @@ DEFAULT_PLANT_NUM = 10
 def get_selected_plants(plants: DataFrame) -> list:
     """
     Returns the selected plants in the sidebar.
-    By Default this returns all plants.
+    By Default this returns 10 plants.
     """
     return sidebar.multiselect("Selected Plants",
                                list(plants["plant_name"].unique()),
