@@ -5,6 +5,7 @@ and uploads it to the s3 bucket.
 """
 
 from os import environ, remove
+from time import perf_counter
 
 from datetime import datetime
 from dotenv import load_dotenv
@@ -24,7 +25,7 @@ def get_database_connection() -> Connection:
     """
 
     try:
-        print("Making new database connection")
+        print("Making new database connection...")
         engine = create_engine(
             f"mssql+pymssql://{environ['DB_USER']}:{environ['DB_PASSWORD']}" +
             f"@{environ['DB_HOST']}/?charset=utf8")
@@ -98,6 +99,8 @@ def convert_to_csv_and_upload(plant_conditions: list[dict], s3_client: client, b
 
 if __name__ == "__main__":
 
+    time_to_run = perf_counter()
+
     load_dotenv()
 
     try:
@@ -106,10 +109,18 @@ if __name__ == "__main__":
                     aws_secret_access_key=environ["AWS_SECRET_ACCESS_KEY"])
 
         conn = get_database_connection()
+
+        print("Extracting data from RDS...")
         list_of_conditions = extract_from_rds(conn)
+        print("Creating dictionaries from data...")
         plant_conditions_dicts = create_condition_dicts(list_of_conditions)
+        print("Converting to .csv and uploading...")
         convert_to_csv_and_upload(
             plant_conditions_dicts, s3, "c9-queenbees-bucket")
+        print("Deleting old data...")
+        wipe_from_rds(conn)
+
+        print(f"Extraction complete --- {perf_counter() - time_to_run}s.")
+
     except KeyError as error:
         print("Can't connect to AWS")
-        wipe_from_rds()
