@@ -26,6 +26,7 @@ def get_number_of_plants(api_index: str):
     try:
         response = requests.get(f"{api_index}", timeout=TIMEOUT)
         data = response.json()
+        print(data)
 
         number_of_plants = data["plants_on_display"]
 
@@ -57,6 +58,8 @@ def connect_to_plant_ids(total_num_plants: int, api_plants: str):
         for id in range(STARTING_ID, total_num_plants):
             response = requests.get(f'{api_plants}{id}', timeout=TIMEOUT)
 
+            print(response.status_code)
+
             if response.status_code == SUCCESS_CODE:
                 print(id)
                 data = response.json()
@@ -69,6 +72,9 @@ def connect_to_plant_ids(total_num_plants: int, api_plants: str):
                 }
 
                 plants.append(wanted_data)
+
+            else:
+                raise HTTPError
 
         return plants
 
