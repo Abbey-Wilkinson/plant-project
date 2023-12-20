@@ -31,7 +31,10 @@ def load_all_plant_data(conn: Connection) -> DataFrame:
         """SELECT plant_condition.plant_condition_id,
         plant_condition.at, plant_condition.soil_moisture,
         plant_condition.temperature, plant_condition.last_watered,
-        plant.plant_id, plant.plant_name
+        plant.plant_id, plant.plant_name,
+        plant.scientific_name, botanist.botanist_id, botanist.first_name,
+        botanist.surname, botanist.email, botanist.phone_number,
+        origin.origin_id, origin.latitude, origin.longitude, origin.region
         FROM s_epsilon.plant_condition
         JOIN s_epsilon.plant ON s_epsilon.plant.plant_id = s_epsilon.plant_condition.plant_id
         JOIN s_epsilon.botanist ON s_epsilon.botanist.botanist_id = s_epsilon.plant.botanist_id
