@@ -12,7 +12,6 @@ def get_database_connection() -> Connection:
     """
     Establishes a database connection to the database specified.
     """
-
     try:
         engine = create_engine(
             f"mssql+pymssql://{environ['DB_USER']}:{environ['DB_PASSWORD']}@{environ['DB_HOST']}/?charset=utf8")
@@ -24,7 +23,9 @@ def get_database_connection() -> Connection:
 
 
 def load_all_plant_data(conn: Connection) -> DataFrame:
-
+    """
+    Loads all of the desired data in from the s_epsilon schema in the RDS.
+    """
     conn.execute(sql.text("USE plants;"))
 
     query = sql.text(
