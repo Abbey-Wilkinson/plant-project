@@ -12,6 +12,8 @@ from database import get_database_connection, load_all_plant_data
 MIN_SOIL_MOISTURE = 15
 MIN_TEMP = 7
 MAX_TEMP = 25
+FIRST_PLANT = 0
+DEFAULT_PLANT_NUM = 10
 
 
 def get_selected_plants(plants: DataFrame) -> list:
@@ -21,7 +23,7 @@ def get_selected_plants(plants: DataFrame) -> list:
     """
     return sidebar.multiselect("Selected Plants",
                                list(plants["plant_name"].unique()),
-                               default=plants["plant_name"].unique()[0:10])
+                               default=plants["plant_name"].unique()[FIRST_PLANT:DEFAULT_PLANT_NUM])
 
 
 def get_names_of_selected_plants(plants: DataFrame, selected_plants: list) -> Series:
@@ -45,7 +47,7 @@ def get_average_temperature(df: DataFrame) -> float64:
     return df["temperature"].astype(float).mean().round(2)
 
 
-def get_latest_data(df: DataFrame):
+def get_latest_data(df: DataFrame) -> DataFrame:
     """
     Returns the latest data of each plant id.
     """
@@ -56,7 +58,7 @@ def get_latest_data(df: DataFrame):
     return latest_conditions
 
 
-def get_all_critical_plants_in_str_format(critical_plants, value: str):
+def get_all_critical_plants_in_str_format(critical_plants, value: str, unit: str) -> str:
     """
     Returns a str of the plants name and their corresponding value.
     """
@@ -70,13 +72,13 @@ def get_all_critical_plants_in_str_format(critical_plants, value: str):
     plants = []
 
     for plant in critical_plants_dicts:
-        plants.append(f'{plant["plant_name"]} ({plant[value]})')
+        plants.append(f'{plant["plant_name"]} ({plant[value]}{unit})')
 
-    joined_plants = ", \n".join(plant for plant in plants)
+    joined_plants = ", \n\n".join(plant for plant in plants)
     return joined_plants
 
 
-def get_names_of_critical_temp_plants(df: DataFrame):
+def get_names_of_critical_temp_plants(df: DataFrame) -> str:
     """
     Returns the names and the temperature of the critical plants.
     """
@@ -87,12 +89,12 @@ def get_names_of_critical_temp_plants(df: DataFrame):
         latest_data['temperature'] >= MAX_TEMP) | (latest_data['temperature'] <= MIN_TEMP)]
 
     joined_plants = get_all_critical_plants_in_str_format(
-        critical_plants, "temperature")
+        critical_plants, "temperature", "°C")
 
     return joined_plants
 
 
-def get_names_of_critical_soil_moisture_plants(df: DataFrame):
+def get_names_of_critical_soil_moisture_plants(df: DataFrame) -> str:
     """
     Returns the names and the temperature of the critical plants.
     """
@@ -102,7 +104,7 @@ def get_names_of_critical_soil_moisture_plants(df: DataFrame):
                                   <= MIN_SOIL_MOISTURE]
 
     joined_plants = get_all_critical_plants_in_str_format(
-        critical_plants, "soil_moisture")
+        critical_plants, "soil_moisture", "%")
 
     return joined_plants
 
