@@ -57,6 +57,7 @@ def wipe_from_rds(db_conn: Connection) -> None:
     db_conn.execute(sql.text("USE plants;"))
 
     query = sql.text("TRUNCATE TABLE s_epsilon.plant_condition;")
+    db_conn.execute(sql.text("COMMIT;"))
     db_conn.execute(query)
 
 
