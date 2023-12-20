@@ -23,7 +23,7 @@ def get_temperature_warning_metrics(critical_temp_plants) -> None:
     Gets the main temperature warnings and displays them at the top.
     """
     st.warning(
-        f'WARNING! The following plants are in CRITICAL TEMPERATURE CONDITION: {critical_temp_plants}', icon="⚠️")
+        f'WARNING! The following plants are in CRITICAL TEMPERATURE CONDITION: \n\n{critical_temp_plants}', icon="⚠️")
 
 
 def get_soil_moisture_warning_metrics(critical_moisture_plants) -> None:
@@ -31,7 +31,7 @@ def get_soil_moisture_warning_metrics(critical_moisture_plants) -> None:
     Gets the main soil moisture warnings and displays them at the top.
     """
     st.warning(
-        f'WARNING! The following plants are in CRITICAL SOIL MOISTURE CONDITION: {critical_moisture_plants}', icon="⚠️")
+        f'WARNING! The following plants are in CRITICAL SOIL MOISTURE CONDITION: \n\n{critical_moisture_plants} \n\n PLEASE WATER ASAP!', icon="⚠️")
 
 
 def get_header_metrics(plants: DataFrame) -> None:
