@@ -22,6 +22,7 @@ def get_database_connection() -> Connection:
     """
     Establishes a connection with the plants database.
     """
+
     try:
         print("Making new database connection")
         engine = create_engine(
@@ -37,6 +38,7 @@ def extract_from_rds(db_conn: Connection) -> list[tuple]:
     """
     Extracts all the plant condition entries from the epsilon schema.
     """
+
     db_conn.execute(sql.text("USE plants;"))
 
     query = sql.text("SELECT * FROM s_epsilon.plant_condition;")
@@ -45,12 +47,17 @@ def extract_from_rds(db_conn: Connection) -> list[tuple]:
     return res
 
 
-def create_condition_dataframe(conditions: list[tuple]) -> list[dict]:
+def create_condition_dicts(conditions: list[tuple]) -> list[dict]:
     """
     Loops through every plant condition entry and converts them into a dataframe.
     """
+
     plant_conditions = []
     for condition in conditions:
+        if len(condition) != 6:
+            print("Incorrect tuple.")
+            continue
+
         data = {
             'at': condition[1],
             'soil_moisture': condition[2],
@@ -68,6 +75,7 @@ def convert_to_csv_and_upload(plant_conditions: list[dict], s3_client: client, b
     """
     Converts the plant condition dataframe into a .csv file and uploads it to the s3 bucket.
     """
+
     df = pd.DataFrame(plant_conditions)
     df.to_csv('./plant_conditions.csv')
 
@@ -87,7 +95,7 @@ if __name__ == "__main__":
 
         conn = get_database_connection()
         list_of_conditions = extract_from_rds(conn)
-        plant_conditions_dicts = create_condition_dataframe(list_of_conditions)
+        plant_conditions_dicts = create_condition_dicts(list_of_conditions)
         convert_to_csv_and_upload(
             plant_conditions_dicts, s3, "c9-queenbees-bucket")
     except KeyError as error:
