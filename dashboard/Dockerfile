@@ -12,4 +12,8 @@ COPY utilities.py .
 COPY visualisations.py .
 COPY app.py .
 
+COPY .streamlit ./.streamlit
+COPY .streamlit/config.toml ./.streamlit
+
+
 CMD streamlit run app.py
