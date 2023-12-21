@@ -9,4 +9,4 @@ sqlalchemy
 ipykernel
 boto3
 fastparquet
-
+pymssql
