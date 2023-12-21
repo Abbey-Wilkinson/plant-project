@@ -1,13 +1,23 @@
 """
 Functions to visualise data on streamlit.
 """
+
+from os import environ
+from boto3 import client
+
 import altair as alt
 from dotenv import load_dotenv
 import pandas as pd
 from pandas import DataFrame
 import streamlit as st
 
-from database import get_database_connection, load_all_plant_data
+from database import (get_database_connection,
+                      load_all_plant_data,
+                      merge_long_and_short_dataframes)
+from parquet_extract import (download_parquet_files,
+                             get_parquet,
+                             remove_old_files,
+                             convert_to_df)
 from utilities import get_latest_data
 
 
@@ -66,7 +76,7 @@ def get_temperature_over_time(plants: DataFrame):
     """
     Returns an altair line chart that shows the temperature readings for each plant over time.
     """
-    plants["Time"] = pd.to_datetime(plants["at"]).dt.hour
+    plants["Time"] = pd.to_datetime(plants["at"]).dt.date
     plants["Plant Name"] = plants[["plant_name"]]
 
     temp_over_time = plants.groupby(["Plant Name", "Time"])[
@@ -86,7 +96,7 @@ def get_soil_moisture_over_time(plants: DataFrame):
     """
     Returns an altair line chart that shows the soil moisture readings for each plant over time.
     """
-    plants["Time"] = pd.to_datetime(plants["at"]).dt.hour
+    plants["Time"] = pd.to_datetime(plants["at"]).dt.date
     plants["Plant Name"] = plants[["plant_name"]]
 
     moisture_over_time = plants.groupby(["Plant Name", "Time"])[
@@ -110,10 +120,26 @@ if __name__ == "__main__":
 
     plants = load_all_plant_data(conn)
 
+    s3 = client("s3",
+                aws_access_key_id=environ["AWS_ACCESS_KEY_ID"],
+                aws_secret_access_key=environ["AWS_SECRET_ACCESS_KEY"])
+
+    download_parquet_files(s3, get_parquet(s3))
+
+    long_plants = convert_to_df()
+
+    remove_old_files()
+
+    print(long_plants)
+
+    merged = merge_long_and_short_dataframes(long_plants, plants)
+
+    print(merged)
+
     sort_ascending_temp = st.sidebar.checkbox(
         "Ascending Temperature", True)
 
     latest_temp_readings = get_latest_temperature_readings(
         plants, sort_ascending_temp)
 
-    get_temperature_over_time(plants)
+    get_temperature_over_time(merged)

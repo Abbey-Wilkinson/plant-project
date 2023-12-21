@@ -16,5 +16,4 @@ COPY parquet_extract.py .
 COPY .streamlit ./.streamlit
 COPY .streamlit/config.toml ./.streamlit
 
-
 CMD streamlit run app.py
