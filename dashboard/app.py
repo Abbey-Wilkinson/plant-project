@@ -135,5 +135,3 @@ if __name__ == "__main__":
         get_header_metrics(plants)
 
         get_main_body(plants, merged)
-
-    # st.table(plants)
