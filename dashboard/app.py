@@ -76,6 +76,8 @@ if __name__ == "__main__":
 
     plants = load_all_plant_data(conn)
 
+    st.set_page_config(layout="wide")
+
     st.title("Plant Sensors Dashboard")
 
     selected_plants = get_selected_plants(plants)
