@@ -62,8 +62,6 @@ def get_latest_soil_moisture_readings(plants: DataFrame, sort_ascending):
     return latest_temp_readings
 
 
-# [TODO]: Create line chart for below function.
-
 def get_temperature_over_time(plants: DataFrame):
     """
     Returns an altair line chart that shows the temperature readings for each plant over time.
@@ -79,12 +77,10 @@ def get_temperature_over_time(plants: DataFrame):
         y=alt.Y('temperature:Q', title='Temperature °C').scale(zero=False),
         color=alt.Color('Plant Name:N', legend=None).scale(scheme='greens')
     ).properties(
-        title='Temperature of Plants over time'
+        title='Temperature of Plants over Time'
     )
     return line_chart
 
-
-# [TODO]: Create line chart for below function.
 
 def get_soil_moisture_over_time(plants: DataFrame):
     """
@@ -101,7 +97,7 @@ def get_soil_moisture_over_time(plants: DataFrame):
         y=alt.Y('soil_moisture:Q', title='Soil Moisture (%)').scale(zero=False),
         color=alt.Color('Plant Name:N', legend=None).scale(scheme='browns')
     ).properties(
-        title='Soil Moisture Percentage of Plants over time'
+        title='Soil Moisture Percentage of Plants over Time'
     )
     return line_chart
 
