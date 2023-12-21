@@ -13,10 +13,10 @@ The files in this folder are used to connect to the API, extract and clean the p
 - Create a `.env` file with `touch .env`
 
 - **Required env variables**: 
-    - DB_HOST               -> arn to your AWS RDS
-    - DB_PORT               -> port the AWS RDS runs on (e.g. If using T-SQL this typically uses 1433)
-    - DB_USER           -> Your database username
-    - DB_NAME           -> Your database name
+    - DB_HOST               -> Arn to your AWS RDS
+    - DB_PORT               -> Port the AWS RDS runs on. (e.g. If using T-SQL this typically uses 1433)
+    - DB_USER               -> Your database username.
+    - DB_NAME               -> Your database name.
     - DB_PASSWORD           -> Password to access your database.
 
 ## Files 
