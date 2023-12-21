@@ -1,13 +1,15 @@
 """
 Establishes a connection to the database.
 """
-
 from os import environ
+from boto3 import client
 
 from sqlalchemy import Connection, create_engine, sql
 import pandas as pd
 from pandas import DataFrame
 from dotenv import load_dotenv
+
+from parquet_extract import convert_to_df, download_parquet_files, remove_old_files, get_parquet
 
 
 def get_database_connection() -> Connection:
@@ -50,6 +52,16 @@ def load_all_plant_data(conn: Connection) -> DataFrame:
     return df
 
 
+def merge_long_and_short_dataframes(long_plants: DataFrame, plants: DataFrame):
+    """
+    Returns a merged dataframe.
+    """
+
+    long_plants["temperature"] = long_plants["temp"]
+    merged = pd.concat([plants, long_plants])
+    return merged
+
+
 if __name__ == "__main__":
 
     load_dotenv()
@@ -57,4 +69,20 @@ if __name__ == "__main__":
     conn = get_database_connection()
 
     plants = load_all_plant_data(conn)
+
     print(plants)
+
+    s3 = client("s3",
+                aws_access_key_id=environ["AWS_ACCESS_KEY_ID"],
+                aws_secret_access_key=environ["AWS_SECRET_ACCESS_KEY"])
+
+    download_parquet_files(s3, get_parquet(s3))
+
+    long_plants = convert_to_df()
+
+    remove_old_files()
+
+    print(long_plants)
+
+    merged = merge_long_and_short_dataframes(long_plants, plants)
+    print(merged)
