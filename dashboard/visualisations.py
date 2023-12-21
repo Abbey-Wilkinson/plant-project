@@ -23,7 +23,7 @@ from parquet_extract import (download_parquet_files,
 from utilities import get_latest_data
 
 
-def get_latest_temperature_readings(plants: DataFrame, sort_ascending):
+def get_latest_temperature_readings(plants: DataFrame, sort_ascending) -> alt.vegalite.v5.api.Chart:
     """
     Returns an altair bar chart that shows the latest temperature readings for each plant.
     """
@@ -48,7 +48,7 @@ def get_latest_temperature_readings(plants: DataFrame, sort_ascending):
     return latest_temp_readings
 
 
-def get_latest_soil_moisture_readings(plants: DataFrame, sort_ascending):
+def get_latest_soil_moisture_readings(plants: DataFrame, sort_ascending) -> alt.vegalite.v5.api.Chart:
     """
     Returns an altair bar chart that shows the latest soil moisture readings for each plant.
     """
@@ -74,7 +74,7 @@ def get_latest_soil_moisture_readings(plants: DataFrame, sort_ascending):
     return latest_temp_readings
 
 
-def get_temperature_over_time(plants: DataFrame):
+def get_temperature_over_time(plants: DataFrame) -> alt.vegalite.v5.api.Chart:
     """
     Returns an altair line chart that shows the temperature readings for each plant over time.
     """
@@ -94,7 +94,7 @@ def get_temperature_over_time(plants: DataFrame):
     return line_chart
 
 
-def get_soil_moisture_over_time(plants: DataFrame):
+def get_soil_moisture_over_time(plants: DataFrame) -> alt.vegalite.v5.api.Chart:
     """
     Returns an altair line chart that shows the soil moisture readings for each plant over time.
     """

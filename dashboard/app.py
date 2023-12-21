@@ -23,7 +23,7 @@ from visualisations import (get_latest_temperature_readings,
                             get_soil_moisture_over_time)
 
 
-def get_temperature_warning_metrics(critical_temp) -> None:
+def get_temperature_warning_metrics(critical_temp: str) -> None:
     """
     Gets the main temperature warnings and displays them at the top.
     """
@@ -33,7 +33,7 @@ def get_temperature_warning_metrics(critical_temp) -> None:
         icon="⚠️")
 
 
-def get_soil_moisture_warning_metrics(critical_moisture) -> None:
+def get_soil_moisture_warning_metrics(critical_moisture: str) -> None:
     """
     Gets the main soil moisture warnings and displays them at the top.
     """
@@ -117,6 +117,8 @@ if __name__ == "__main__":
     st.sidebar.divider()
 
     CRITICAL_TEMP_PLANTS = get_names_of_critical_temp_plants(plants)
+
+    print(type(CRITICAL_TEMP_PLANTS))
 
     st.sidebar.subheader("Latest Temperature Readings:")
     sort_ascending_temp = st.sidebar.checkbox(

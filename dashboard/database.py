@@ -66,7 +66,7 @@ def load_plant_data(conn):
     return df
 
 
-def merge_long_with_plant_name(long_plants: DataFrame, just_plant: DataFrame):
+def merge_long_with_plant_name(long_plants: DataFrame, just_plant: DataFrame) -> DataFrame:
 
     long_plants["temperature"] = long_plants["temp"]
     with_name = pd.merge(long_plants, just_plant, on="plant_id")[[
@@ -75,7 +75,7 @@ def merge_long_with_plant_name(long_plants: DataFrame, just_plant: DataFrame):
     return with_name
 
 
-def merge_long_and_short_dataframes(long_plants: DataFrame, plants: DataFrame):
+def merge_long_and_short_dataframes(long_plants: DataFrame, plants: DataFrame) -> DataFrame:
     """
     Returns a merged dataframe.
     """
