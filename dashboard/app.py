@@ -23,40 +23,45 @@ from visualisations import (get_latest_temperature_readings,
                             get_soil_moisture_over_time)
 
 
-def get_temperature_warning_metrics(critical_temp_plants) -> None:
+def get_temperature_warning_metrics(critical_temp) -> None:
     """
     Gets the main temperature warnings and displays them at the top.
     """
     st.warning(
-        f'WARNING! The following plants are in CRITICAL TEMPERATURE CONDITION: \n\n{critical_temp_plants}', icon="⚠️")
+        f'''WARNING! The following plants are in CRITICAL TEMPERATURE CONDITION:
+        \n\n{critical_temp}''',
+        icon="⚠️")
 
 
-def get_soil_moisture_warning_metrics(critical_moisture_plants) -> None:
+def get_soil_moisture_warning_metrics(critical_moisture) -> None:
     """
     Gets the main soil moisture warnings and displays them at the top.
     """
     st.warning(
-        f'WARNING! The following plants are in CRITICAL SOIL MOISTURE CONDITION: \n\n{critical_moisture_plants} \n\n PLEASE WATER ASAP!', icon="⚠️")
+        f'''WARNING! The following plants are in CRITICAL SOIL MOISTURE CONDITION:
+        \n\n{critical_moisture} \n\n PLEASE WATER ASAP!''', icon="⚠️")
 
 
-def get_header_metrics(plants: DataFrame) -> None:
+def get_header_metrics(plants_df: DataFrame, selected: list, names_selected: list) -> None:
     """
     Gets the main headers and displays them.
     """
     head_cols = st.columns(3)
     with head_cols[0]:
         st.metric("Total Number of Plants Selected :herb:",
-                  len(selected_plants))
+                  len(selected))
     with head_cols[1]:
         st.metric("Average Soil Moisture: :potted_plant:",
-                  get_average_soil_moisture(plants[name_in_selected_plants]))
+                  get_average_soil_moisture(plants_df[names_selected]))
     with head_cols[2]:
         st.metric("Average Temperature: :thermometer:",
-                  f'{get_average_temperature(plants[name_in_selected_plants])}°C')
+                  f'{get_average_temperature(plants_df[names_selected])}°C')
     st.divider()
 
 
-def get_main_body(plants: DataFrame, merged: DataFrame) -> None:
+def get_main_body(plants_df: DataFrame,
+                  merged_df: DataFrame,
+                  selected_names: list, temp_sort: bool, mois_sort: bool) -> None:
     """
     Gets the main body charts and displays them.
     """
@@ -64,17 +69,17 @@ def get_main_body(plants: DataFrame, merged: DataFrame) -> None:
 
     with body_cols[0]:
         st.altair_chart(get_latest_temperature_readings(
-            plants[name_in_selected_plants], sort_ascending_temp), use_container_width=True)
+            plants_df[selected_names], temp_sort), use_container_width=True)
 
         st.altair_chart(get_temperature_over_time(
-            merged[name_in_selected_plants]), use_container_width=True)
+            merged_df[selected_names]), use_container_width=True)
 
     with body_cols[1]:
         st.altair_chart(get_latest_soil_moisture_readings(
-            plants[name_in_selected_plants], sort_ascending_moisture), use_container_width=True)
+            plants_df[selected_names], mois_sort), use_container_width=True)
 
         st.altair_chart(get_soil_moisture_over_time(
-            merged[name_in_selected_plants]), use_container_width=True)
+            merged_df[selected_names]), use_container_width=True)
 
 
 if __name__ == "__main__":
@@ -99,39 +104,48 @@ if __name__ == "__main__":
 
     st.set_page_config(layout="wide")
 
-    st.title("Plant Sensors Dashboard")
+    st.title(":cactus: Plant Sensors Dashboard :cactus:")
 
     st.sidebar.metric("Total Number of Plants in Museum :herb:",
                       len(plants["plant_name"].unique()))
+    st.sidebar.divider()
 
     selected_plants = get_selected_plants(plants)
 
     name_in_selected_plants = get_names_of_selected_plants(
         plants, selected_plants)
+    st.sidebar.divider()
 
-    critical_temp_plants = get_names_of_critical_temp_plants(plants)
+    CRITICAL_TEMP_PLANTS = get_names_of_critical_temp_plants(plants)
 
     st.sidebar.subheader("Latest Temperature Readings:")
     sort_ascending_temp = st.sidebar.checkbox(
         "Ascending Temperature", True)
+    st.sidebar.divider()
 
     st.sidebar.subheader("Latest Soil Moisture Percentage Readings")
     sort_ascending_moisture = st.sidebar.checkbox(
         "Ascending Soil Moisture Percentage", True)
 
-    if critical_temp_plants:
+    if CRITICAL_TEMP_PLANTS:
 
-        get_temperature_warning_metrics(critical_temp_plants)
+        get_temperature_warning_metrics(CRITICAL_TEMP_PLANTS)
 
-    critical_soil_moisture_plants = get_names_of_critical_soil_moisture_plants(
+    CRITICAL_SOIL_MOISTURE_PLANTS = get_names_of_critical_soil_moisture_plants(
         plants)
 
-    if critical_soil_moisture_plants:
+    if CRITICAL_SOIL_MOISTURE_PLANTS:
 
-        get_soil_moisture_warning_metrics(critical_soil_moisture_plants)
+        get_soil_moisture_warning_metrics(CRITICAL_SOIL_MOISTURE_PLANTS)
 
     if selected_plants:
 
-        get_header_metrics(plants)
+        get_header_metrics(plants,
+                           selected_plants,
+                           name_in_selected_plants)
 
-        get_main_body(plants, merged)
+        get_main_body(plants,
+                      merged,
+                      name_in_selected_plants,
+                      sort_ascending_temp,
+                      sort_ascending_moisture)
