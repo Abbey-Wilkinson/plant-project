@@ -34,7 +34,7 @@ def download_parquet_files(s3_client: client, parquet_list: list[str]) -> None:
         mkdir(FOLDER_NAME)
 
     for index, parquet in enumerate(parquet_list):
-        file_name = f"{index}.parquet"
+        file_name = path.basename(f"{index}.parquet")
         file_path = path.join(FOLDER_NAME, file_name)
         s3_client.download_file(
             environ["BUCKET_NAME"], parquet, file_path)
