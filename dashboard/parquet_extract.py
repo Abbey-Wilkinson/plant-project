@@ -2,11 +2,11 @@
 Script that extracts all of the .parquet files from the S3 bucket and concatenates them.
 """
 
+from shutil import rmtree
 from os import environ, path, mkdir, listdir
 from time import perf_counter
 
 import pandas as pd
-import fastparquet
 from dotenv import load_dotenv
 from boto3 import client
 
@@ -55,6 +55,14 @@ def convert_to_df() -> pd.DataFrame:
     return long_plants_df
 
 
+def remove_old_files() -> None:
+    """
+    Removes all of the .parquet files from plant_data.
+    """
+
+    rmtree(FOLDER_NAME)
+
+
 if __name__ == "__main__":
 
     time_counter = perf_counter()
@@ -67,5 +75,7 @@ if __name__ == "__main__":
     download_parquet_files(s3, get_parquet(s3))
 
     long_plants = convert_to_df()
+
+    remove_old_files()
 
     print(f"Long term data downloaded --- {perf_counter() - time_counter}s.")
