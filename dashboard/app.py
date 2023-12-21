@@ -53,6 +53,7 @@ def get_header_metrics(plants: DataFrame) -> None:
     with head_cols[2]:
         st.metric("Average Temperature: :thermometer:",
                   f'{get_average_temperature(plants[name_in_selected_plants])}°C')
+    st.divider()
 
 
 def get_main_body(plants) -> None:
