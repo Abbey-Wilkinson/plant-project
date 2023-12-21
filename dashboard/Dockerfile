@@ -11,6 +11,7 @@ COPY database.py .
 COPY utilities.py .
 COPY visualisations.py .
 COPY app.py .
+COPY parquet_extract.py .
 
 COPY .streamlit ./.streamlit
 COPY .streamlit/config.toml ./.streamlit
