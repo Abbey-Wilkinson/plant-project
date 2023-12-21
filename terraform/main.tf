@@ -245,7 +245,7 @@ resource "aws_scheduler_schedule" "plant-pipeline-schedule" {
 # create EventBridge schedule for rds-s3 pipeline
 resource "aws_scheduler_schedule" "rds-pipeline-schedule" {
     name       = "c9-queenbees-rds-s3-pipeline-schedule"
-    schedule_expression = "cron(59 23 * * ? *)"
+    schedule_expression = "cron(55 23 * * ? *)"
     flexible_time_window {
         mode = "OFF"
     }
