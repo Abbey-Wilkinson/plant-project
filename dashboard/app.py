@@ -9,7 +9,7 @@ from pandas import DataFrame
 import streamlit as st
 from boto3 import client
 
-from parquet_extract import get_parquet, download_parquet_files, convert_to_df
+from parquet_extract import get_parquet, download_parquet_files, convert_to_df, remove_old_files
 from database import get_database_connection, load_all_plant_data
 from utilities import (get_selected_plants,
                        get_average_soil_moisture,
@@ -89,6 +89,8 @@ if __name__ == "__main__":
     download_parquet_files(s3, get_parquet(s3))
 
     long_plants = convert_to_df()
+
+    remove_old_files()
 
     plants = load_all_plant_data(conn)
 
