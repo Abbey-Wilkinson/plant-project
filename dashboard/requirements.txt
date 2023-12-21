@@ -7,4 +7,6 @@ altair_viewer
 python-dotenv
 sqlalchemy
 ipykernel
+boto3
+fastparquet
 
