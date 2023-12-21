@@ -13,7 +13,9 @@ import streamlit as st
 
 from database import (get_database_connection,
                       load_all_plant_data,
-                      merge_long_and_short_dataframes)
+                      merge_long_and_short_dataframes,
+                      merge_long_with_plant_name,
+                      load_plant_data)
 from parquet_extract import (download_parquet_files,
                              get_parquet,
                              remove_old_files,
@@ -83,7 +85,7 @@ def get_temperature_over_time(plants: DataFrame):
         "temperature"].mean().reset_index()
 
     line_chart = alt.Chart(temp_over_time).mark_line().encode(
-        x=alt.X('Time', title='Time (hr)').scale(zero=False),
+        x=alt.X('Time', title='Day').scale(zero=False),
         y=alt.Y('temperature:Q', title='Temperature °C').scale(zero=False),
         color=alt.Color('Plant Name:N', legend=None).scale(scheme='greens')
     ).properties(
@@ -103,7 +105,7 @@ def get_soil_moisture_over_time(plants: DataFrame):
         "soil_moisture"].mean().reset_index()
 
     line_chart = alt.Chart(moisture_over_time).mark_line().encode(
-        x=alt.X('Time', title='Time (hr)').scale(zero=False),
+        x=alt.X('Time', title='Day').scale(zero=False),
         y=alt.Y('soil_moisture:Q', title='Soil Moisture (%)').scale(zero=False),
         color=alt.Color('Plant Name:N', legend=None).scale(scheme='browns')
     ).properties(
@@ -119,6 +121,7 @@ if __name__ == "__main__":
     conn = get_database_connection()
 
     plants = load_all_plant_data(conn)
+    just_plant = load_plant_data(conn)
 
     s3 = client("s3",
                 aws_access_key_id=environ["AWS_ACCESS_KEY_ID"],
@@ -130,11 +133,9 @@ if __name__ == "__main__":
 
     remove_old_files()
 
-    print(long_plants)
+    with_name = merge_long_with_plant_name(long_plants, just_plant)
 
-    merged = merge_long_and_short_dataframes(long_plants, plants)
-
-    print(merged)
+    merged = merge_long_and_short_dataframes(with_name, plants)
 
     sort_ascending_temp = st.sidebar.checkbox(
         "Ascending Temperature", True)
