@@ -31,7 +31,7 @@ class TestConnectToPlantIDs:
         api_plants = "https://data-eng-plants-api.herokuapp.com/plants/"
         total_num_plants = 2
         requests_mock.get(
-            "https://data-eng-plants-api.herokuapp.com/plants/1", status_code=404)
+            f"https://data-eng-plants-api.herokuapp.com/plants/1", status_code=404)
         with pytest.raises(APIError) as exception:
             connect_to_plant_ids(total_num_plants, api_plants)
 

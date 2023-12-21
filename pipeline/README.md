@@ -11,12 +11,11 @@ The files in this folder are used to connect to the API, extract and clean the p
 - Install all requirements for this folder: `pip3 install -r requirements.txt`.
 
 - Create a `.env` file with `touch .env`
+- You need a database called `plants`.
 
 - **Required env variables**: 
     - DB_HOST               -> Arn to your AWS RDS
-    - DB_PORT               -> Port the AWS RDS runs on. (e.g. If using T-SQL this typically uses 1433)
     - DB_USER               -> Your database username.
-    - DB_NAME               -> Your database name.
     - DB_PASSWORD           -> Password to access your database.
 
 ## Files 

@@ -70,6 +70,11 @@ def connect_to_plant_ids(total_num_plants: int, api_plants: str):
 
                 plant_data.append(wanted_data)
 
+            # missing plants should be skipped if not there,
+            # not raise an error unless id is in certain range
+            elif (plant_id < total_num_plants and
+                  plant_id > STARTING_ID):
+                continue
             else:
                 raise HTTPError
 

@@ -15,12 +15,11 @@ This folder contains all code and resources required to create a the pipeline wh
 For this pipeline script to work, there are a few assumptions which need to be made:
 - You have an RDS up and running with the correct data inside.
 - You have an S3 bucket ready to upload csv files to.
+- You have a database called `plants`.
 
 - **Required env variables**: 
-    - DB_HOST               -> arn to your AWS RDS.
-    - DB_PORT               -> port the AWS RDS runs on. (e.g. If using T-SQL this typically uses 1433)
+    - DB_HOST               -> Arn to your AWS RDS.
     - DB_USER               -> Your database username.
-    - DB_NAME               -> Your database name.
     - DB_PASSWORD           -> Password to access your database.
     - AWS_ACCESS_KEY_ID     -> Your AWS access key ID to connect to AWS.
     - AWS_SECRET_ACCESS_KEY -> Your AWS secret access key to connect to AWS.
