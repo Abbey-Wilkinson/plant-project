@@ -38,17 +38,14 @@ def get_header_metrics(plants: DataFrame) -> None:
     """
     Gets the main headers and displays them.
     """
-    head_cols = st.columns(4)
+    head_cols = st.columns(3)
     with head_cols[0]:
-        st.metric("Total Number of Plants in Museum :herb:",
-                  len(plants["plant_name"].unique()))
-    with head_cols[1]:
         st.metric("Total Number of Plants Selected :herb:",
                   len(selected_plants))
-    with head_cols[2]:
+    with head_cols[1]:
         st.metric("Average Soil Moisture: :potted_plant:",
                   get_average_soil_moisture(plants[name_in_selected_plants]))
-    with head_cols[3]:
+    with head_cols[2]:
         st.metric("Average Temperature: :thermometer:",
                   f'{get_average_temperature(plants[name_in_selected_plants])}°C')
 
@@ -63,9 +60,15 @@ def get_main_body(plants) -> None:
         st.altair_chart(get_latest_temperature_readings(
             plants[name_in_selected_plants], sort_ascending_temp), use_container_width=True)
 
+        st.altair_chart(get_temperature_over_time(
+            plants[name_in_selected_plants]), use_container_width=True)
+
     with body_cols[1]:
         st.altair_chart(get_latest_soil_moisture_readings(
             plants[name_in_selected_plants], sort_ascending_moisture), use_container_width=True)
+
+        st.altair_chart(get_soil_moisture_over_time(
+            plants[name_in_selected_plants]), use_container_width=True)
 
 
 if __name__ == "__main__":
@@ -76,7 +79,12 @@ if __name__ == "__main__":
 
     plants = load_all_plant_data(conn)
 
+    st.set_page_config(layout="wide")
+
     st.title("Plant Sensors Dashboard")
+
+    st.sidebar.metric("Total Number of Plants in Museum :herb:",
+                      len(plants["plant_name"].unique()))
 
     selected_plants = get_selected_plants(plants)
 
