@@ -1,10 +1,15 @@
 """
 Streamlit app for plants.
 """
+
+from os import environ
+
 from dotenv import load_dotenv
 from pandas import DataFrame
 import streamlit as st
+from boto3 import client
 
+from parquet_extract import get_parquet, download_parquet_files, convert_to_df
 from database import get_database_connection, load_all_plant_data
 from utilities import (get_selected_plants,
                        get_average_soil_moisture,
@@ -76,6 +81,14 @@ if __name__ == "__main__":
     load_dotenv()
 
     conn = get_database_connection()
+
+    s3 = client("s3",
+                aws_access_key_id=environ["AWS_ACCESS_KEY_ID"],
+                aws_secret_access_key=environ["AWS_SECRET_ACCESS_KEY"])
+
+    download_parquet_files(s3, get_parquet(s3))
+
+    long_plants = convert_to_df()
 
     plants = load_all_plant_data(conn)
 
