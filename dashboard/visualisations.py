@@ -3,7 +3,9 @@ Functions to visualise data on streamlit.
 """
 import altair as alt
 from dotenv import load_dotenv
+import pandas as pd
 from pandas import DataFrame
+import streamlit as st
 
 from database import get_database_connection, load_all_plant_data
 from utilities import get_latest_data
@@ -19,7 +21,6 @@ def get_latest_temperature_readings(plants: DataFrame, sort_ascending):
     latest_data["Temperature (°C)"] = latest_data[["temperature"]]
 
     latest_data = latest_data[["Plant Name", "Temperature (°C)"]]
-    print(latest_data)
 
     sort_order = "x" if sort_ascending else "-x"
 
@@ -46,7 +47,6 @@ def get_latest_soil_moisture_readings(plants: DataFrame, sort_ascending):
         "soil_moisture"]]
 
     latest_data = latest_data[["Plant Name", "Soil Moisture (%)"]]
-    print(latest_data)
 
     sort_order = "x" if sort_ascending else "-x"
 
@@ -68,7 +68,20 @@ def get_temperature_over_time(plants: DataFrame):
     """
     Returns an altair line chart that shows the temperature readings for each plant over time.
     """
-    pass
+    plants["Time"] = pd.to_datetime(plants["at"]).dt.hour
+    plants["Plant Name"] = plants[["plant_name"]]
+
+    temp_over_time = plants.groupby(["Plant Name", "Time"])[
+        "temperature"].mean().reset_index()
+
+    line_chart = alt.Chart(temp_over_time).mark_line().encode(
+        x=alt.X('Time', title='Time (hr)').scale(zero=False),
+        y=alt.Y('temperature:Q', title='Temperature °C').scale(zero=False),
+        color=alt.Color('Plant Name:N', legend=None).scale(scheme='greens')
+    ).properties(
+        title='Temperature of Plants over time'
+    )
+    return line_chart
 
 
 # [TODO]: Create line chart for below function.
@@ -77,7 +90,20 @@ def get_soil_moisture_over_time(plants: DataFrame):
     """
     Returns an altair line chart that shows the soil moisture readings for each plant over time.
     """
-    pass
+    plants["Time"] = pd.to_datetime(plants["at"]).dt.hour
+    plants["Plant Name"] = plants[["plant_name"]]
+
+    moisture_over_time = plants.groupby(["Plant Name", "Time"])[
+        "soil_moisture"].mean().reset_index()
+
+    line_chart = alt.Chart(moisture_over_time).mark_line().encode(
+        x=alt.X('Time', title='Time (hr)').scale(zero=False),
+        y=alt.Y('soil_moisture:Q', title='Soil Moisture (%)').scale(zero=False),
+        color=alt.Color('Plant Name:N', legend=None).scale(scheme='browns')
+    ).properties(
+        title='Soil Moisture Percentage of Plants over time'
+    )
+    return line_chart
 
 
 if __name__ == "__main__":
@@ -88,4 +114,10 @@ if __name__ == "__main__":
 
     plants = load_all_plant_data(conn)
 
-    latest_temp_readings = get_latest_temperature_readings(plants)
+    sort_ascending_temp = st.sidebar.checkbox(
+        "Ascending Temperature", True)
+
+    latest_temp_readings = get_latest_temperature_readings(
+        plants, sort_ascending_temp)
+
+    get_temperature_over_time(plants)
