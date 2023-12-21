@@ -1,7 +1,6 @@
 """
 Streamlit app for plants.
 """
-
 from os import environ
 
 from dotenv import load_dotenv
@@ -10,7 +9,8 @@ import streamlit as st
 from boto3 import client
 
 from parquet_extract import get_parquet, download_parquet_files, convert_to_df, remove_old_files
-from database import get_database_connection, load_all_plant_data
+from database import (get_database_connection,
+                      load_all_plant_data, merge_long_and_short_dataframes)
 from utilities import (get_selected_plants,
                        get_average_soil_moisture,
                        get_average_temperature,
@@ -56,7 +56,7 @@ def get_header_metrics(plants: DataFrame) -> None:
     st.divider()
 
 
-def get_main_body(plants) -> None:
+def get_main_body(plants: DataFrame, merged: DataFrame) -> None:
     """
     Gets the main body charts and displays them.
     """
@@ -67,14 +67,14 @@ def get_main_body(plants) -> None:
             plants[name_in_selected_plants], sort_ascending_temp), use_container_width=True)
 
         st.altair_chart(get_temperature_over_time(
-            plants[name_in_selected_plants]), use_container_width=True)
+            merged[name_in_selected_plants]), use_container_width=True)
 
     with body_cols[1]:
         st.altair_chart(get_latest_soil_moisture_readings(
             plants[name_in_selected_plants], sort_ascending_moisture), use_container_width=True)
 
         st.altair_chart(get_soil_moisture_over_time(
-            plants[name_in_selected_plants]), use_container_width=True)
+            merged[name_in_selected_plants]), use_container_width=True)
 
 
 if __name__ == "__main__":
@@ -94,6 +94,8 @@ if __name__ == "__main__":
     remove_old_files()
 
     plants = load_all_plant_data(conn)
+
+    merged = merge_long_and_short_dataframes(long_plants, plants)
 
     st.set_page_config(layout="wide")
 
@@ -132,6 +134,6 @@ if __name__ == "__main__":
 
         get_header_metrics(plants)
 
-        get_main_body(plants)
+        get_main_body(plants, merged)
 
     # st.table(plants)
