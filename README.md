@@ -38,3 +38,7 @@ This table will contain all the details about the botanists responsible for look
 
 #### The Origin Table
 This table will contain all the details about the plants' origins including the latitude, longitude and the name of the region where the plant was found. This table also includes a link to the country table which also links to the continent table.
+
+## Folders Explained
+Within each folder, there is a README that explains specifically its role. But to give a high level overview:
+- `dashboard` contains code related to
