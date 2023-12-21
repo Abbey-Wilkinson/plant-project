@@ -85,17 +85,17 @@ def create_condition_dicts(conditions: list[tuple]) -> list[dict]:
     return plant_conditions
 
 
-def convert_to_csv_and_upload(plant_conditions: list[dict], s3_client: client, bucket):
+def convert_to_parquet_and_upload(plant_conditions: list[dict], s3_client: client, bucket):
     """
     Converts the plant condition dataframe into a .csv file and uploads it to the s3 bucket.
     """
 
     df = pd.DataFrame(plant_conditions)
-    df.to_csv('./plant_conditions.csv', index=False)
+    df.to_parquet('./plant_conditions.parquet', index=False)
 
-    s3_client.upload_file("./plant_conditions.csv", bucket,
-                          f"{CURRENT_DATE.year}-{CURRENT_DATE.month}/{CURRENT_DATE.day}.csv")
-    remove("./plant_conditions.csv")
+    s3_client.upload_file("./plant_conditions.parquet", bucket,
+                          f"{CURRENT_DATE.year}-{CURRENT_DATE.month}/{CURRENT_DATE.day}.parquet")
+    remove("./plant_conditions.parquet")
 
 
 if __name__ == "__main__":
@@ -115,8 +115,8 @@ if __name__ == "__main__":
         list_of_conditions = extract_from_rds(conn)
         print("Creating dictionaries from data...")
         plant_conditions_dicts = create_condition_dicts(list_of_conditions)
-        print("Converting to .csv and uploading...")
-        convert_to_csv_and_upload(
+        print("Converting to .parquet and uploading...")
+        convert_to_parquet_and_upload(
             plant_conditions_dicts, s3, "c9-queenbees-bucket")
         print("Deleting old data...")
         wipe_from_rds(conn)

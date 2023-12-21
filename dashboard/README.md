@@ -11,18 +11,21 @@ The files in this folder are used to connect to the database, make visualisation
 - Install all requirements for this folder: `pip3 install -r requirements.txt`.
 
 - Create a `.env` file with `touch .env`
+- You need a database called `plants`.
 
 - **Required env variables**: 
-    - DB_HOST               -> arn to your AWS RDS
-    - DB_PORT               -> port the AWS RDS runs on (e.g. If using T-SQL this typically uses 1433)
-    - DB_USER           -> Your database username
-    - DB_NAME           -> Your database name
+    - DB_HOST               -> Arn to your AWS RDS.
+    - DB_USER               -> Your database username.
     - DB_PASSWORD           -> Password to access your database.
+    - AWS_ACCESS_KEY_ID     -> Your AWS access key ID to connect to AWS.
+    - AWS_SECRET_ACCESS_KEY -> Your AWS secret access key to connect to AWS.
+    - BUCKET_NAME           -> The name of your bucket containing .parquet files.
 
 ## Files 
 
 - `requirements.txt` : This file contains all the required packages to run any other files
 - `database.py` : Makes a connection to the remote database and joins tables via an sql query. 
+- `parquet_extract.py` : This downloads all of the long term data from the S3 bucket to make visualisations with.
 - `Dockerfile` : This file contains instructions to create a new docker image that runs `app.py`.
 - `app.py` : Imports functions from the below and creates the streamlit dashboard layout.    
   - `utilities.py` : loads all data and merges tables Whilst getting important data.
