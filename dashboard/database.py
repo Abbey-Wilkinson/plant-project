@@ -37,28 +37,49 @@ def load_all_plant_data(conn: Connection) -> DataFrame:
         plant_condition.at, plant_condition.soil_moisture,
         plant_condition.temperature, plant_condition.last_watered,
         plant.plant_id, plant.plant_name,
-        plant.scientific_name, botanist.botanist_id, botanist.first_name,
-        botanist.surname, botanist.email, botanist.phone_number,
-        origin.origin_id, origin.latitude, origin.longitude, origin.region
+        plant.scientific_name
         FROM s_epsilon.plant_condition
-        JOIN s_epsilon.plant ON s_epsilon.plant.plant_id = s_epsilon.plant_condition.plant_id
-        JOIN s_epsilon.botanist ON s_epsilon.botanist.botanist_id = s_epsilon.plant.botanist_id
-        JOIN s_epsilon.origin ON s_epsilon.origin.origin_id = s_epsilon.plant.origin_id;""")
+        JOIN s_epsilon.plant ON s_epsilon.plant.plant_id = s_epsilon.plant_condition.plant_id;""")
 
     conn.execute(sql.text("COMMIT;"))
+    res = conn.execute(query).fetchall()
+    df = pd.DataFrame(res)
+
+    df = df[["at", "soil_moisture", "temperature",
+             "plant_id", "plant_name", "last_watered"]]
+
+    return df
+
+
+def load_plant_data(conn):
+    conn.execute(sql.text("USE plants;"))
+
+    query = sql.text(
+        """SELECT 
+        plant.plant_id, plant.plant_name,
+        plant.scientific_name
+        FROM s_epsilon.plant;""")
+
     res = conn.execute(query).fetchall()
     df = pd.DataFrame(res)
 
     return df
 
 
+def merge_long_with_plant_name(long_plants: DataFrame, just_plant: DataFrame):
+
+    long_plants["temperature"] = long_plants["temp"]
+    with_name = pd.merge(long_plants, just_plant, on="plant_id")[[
+        "at", "soil_moisture", "temperature", "plant_id", "plant_name", "last_watered"]]
+
+    return with_name
+
+
 def merge_long_and_short_dataframes(long_plants: DataFrame, plants: DataFrame):
     """
     Returns a merged dataframe.
     """
-
-    long_plants["temperature"] = long_plants["temp"]
-    merged = pd.concat([plants, long_plants])
+    merged = pd.concat([long_plants, plants])
     return merged
 
 
@@ -70,7 +91,7 @@ if __name__ == "__main__":
 
     plants = load_all_plant_data(conn)
 
-    print(plants)
+    just_plant = load_plant_data(conn)
 
     s3 = client("s3",
                 aws_access_key_id=environ["AWS_ACCESS_KEY_ID"],
@@ -81,8 +102,6 @@ if __name__ == "__main__":
     long_plants = convert_to_df()
 
     remove_old_files()
+    with_name = merge_long_with_plant_name(long_plants, just_plant)
 
-    print(long_plants)
-
-    merged = merge_long_and_short_dataframes(long_plants, plants)
-    print(merged)
+    merged = merge_long_and_short_dataframes(with_name, plants)
