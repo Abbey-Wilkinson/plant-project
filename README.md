@@ -41,4 +41,8 @@ This table will contain all the details about the plants' origins including the 
 
 ## Folders Explained
 Within each folder, there is a README that explains specifically its role. But to give a high level overview:
-- `dashboard` contains code related to
+- `dashboard` - contains code related to the dashboarding service.
+- `images` - contains the images that are needed for all README files.
+- `pipeline` - contains the code that extracts information from the plan API, cleans it and uploads it to an RDS.
+- `rds_s3_pipeline` - contains code that extracts all information from the RDS then uploads it to the S3.
+- `terraform` - contains terraform files that setup most of the cloud infrastructure needed.
