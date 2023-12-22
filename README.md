@@ -1,4 +1,6 @@
-# Plants Project - Queen Bees 
+# Museum Plant Monitoring Project
+This project is a case study that aims to provide a means of monitoring the health of a range of plants in a museum over time. Currently, the museum has an API that reports only the **current** health of a plant. Developing a pipeline to extract the data from the API and storing it in long term storage allows theoretical gardeners to be warned of any problems that may arise through the analysis of gathered data. This is what the project ultimately aims to address: the extraction of the museum data, long term storage of the data, and data visualisations to provide insights to the plants' wellbeing.
+
 
 ## Cloud architecture
 A high level overview of the cloud architecture can be seen below:
@@ -21,7 +23,7 @@ One final feature shown here is the dashboard:
 For this project, a dashboard is provided using Streamlit. The dashboard here is run as a service within an ECS cluster. The dashboard would read from the RDS so that it can obtain real-time data and it would also read from the S3 obtain historical data as well.
 
 ## ERD
-A ERD which clearly describes the tables in the schema and the data stored in each table:
+An ERD which clearly describes the tables in the schema and the data stored in each table:
 
 ![ERD](images/ERD.png)
 
@@ -36,3 +38,11 @@ This table will contain all the details about the botanists responsible for look
 
 #### The Origin Table
 This table will contain all the details about the plants' origins including the latitude, longitude and the name of the region where the plant was found. This table also includes a link to the country table which also links to the continent table.
+
+## Folders Explained
+Within each folder, there is a README that explains specifically its role. But to give a high level overview:
+- `dashboard` - contains code related to the dashboarding service.
+- `images` - contains the images that are needed for all README files.
+- `pipeline` - contains the code that extracts information from the plan API, cleans it and uploads it to an RDS.
+- `rds_s3_pipeline` - contains code that extracts all information from the RDS then uploads it to the S3.
+- `terraform` - contains terraform files that setup most of the cloud infrastructure needed.
