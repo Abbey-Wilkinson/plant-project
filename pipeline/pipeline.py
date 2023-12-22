@@ -7,9 +7,13 @@ from time import perf_counter
 from dotenv import load_dotenv
 
 from extract import get_number_of_plants, connect_to_plant_ids, convert_to_pd_dataframe
-from transform import (clean_last_watered_data, clean_recording_taken_data,
-                       clean_soil_moisture_data, clean_temperature_data)
-from load import get_all_info_from_table, get_database_connection, insert_data_into_database
+from transform import (clean_last_watered_data,
+                       clean_recording_taken_data,
+                       clean_soil_moisture_data,
+                       clean_temperature_data)
+from load import (get_all_info_from_table,
+                  get_database_connection,
+                  insert_data_into_database)
 
 
 if __name__ == "__main__":
