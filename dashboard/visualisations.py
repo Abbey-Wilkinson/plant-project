@@ -78,14 +78,14 @@ def get_temperature_over_time(plants: DataFrame) -> alt.vegalite.v5.api.Chart:
     """
     Returns an altair line chart that shows the temperature readings for each plant over time.
     """
-    plants["Time"] = pd.to_datetime(plants["at"]).dt.date
+    plants["Time"] = pd.to_datetime(plants["at"]).dt.hour
     plants["Plant Name"] = plants[["plant_name"]]
 
     temp_over_time = plants.groupby(["Plant Name", "Time"])[
         "temperature"].mean().reset_index()
 
     line_chart = alt.Chart(temp_over_time).mark_line().encode(
-        x=alt.X('Time', title='Day').scale(zero=False),
+        x=alt.X('Time', title='Hour').scale(zero=False),
         y=alt.Y('temperature:Q', title='Temperature °C').scale(zero=False),
         color=alt.Color('Plant Name:N', legend=None).scale(scheme='greens')
     ).properties(
@@ -98,14 +98,14 @@ def get_soil_moisture_over_time(plants: DataFrame) -> alt.vegalite.v5.api.Chart:
     """
     Returns an altair line chart that shows the soil moisture readings for each plant over time.
     """
-    plants["Time"] = pd.to_datetime(plants["at"]).dt.date
+    plants["Time"] = pd.to_datetime(plants["at"]).dt.hour
     plants["Plant Name"] = plants[["plant_name"]]
 
     moisture_over_time = plants.groupby(["Plant Name", "Time"])[
         "soil_moisture"].mean().reset_index()
 
     line_chart = alt.Chart(moisture_over_time).mark_line().encode(
-        x=alt.X('Time', title='Day').scale(zero=False),
+        x=alt.X('Time', title='Hour').scale(zero=False),
         y=alt.Y('soil_moisture:Q', title='Soil Moisture (%)').scale(zero=False),
         color=alt.Color('Plant Name:N', legend=None).scale(scheme='browns')
     ).properties(

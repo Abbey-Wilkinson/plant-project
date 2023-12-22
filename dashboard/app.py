@@ -61,7 +61,9 @@ def get_header_metrics(plants_df: DataFrame, selected: list, names_selected: lis
 
 def get_main_body(plants_df: DataFrame,
                   merged_df: DataFrame,
-                  selected_names: list, temp_sort: bool, mois_sort: bool) -> None:
+                  selected_names: list,
+                  all_selected_names: list,
+                  temp_sort: bool, mois_sort: bool) -> None:
     """
     Gets the main body charts and displays them.
     """
@@ -72,14 +74,14 @@ def get_main_body(plants_df: DataFrame,
             plants_df[selected_names], temp_sort), use_container_width=True)
 
         st.altair_chart(get_temperature_over_time(
-            merged_df[selected_names]), use_container_width=True)
+            merged_df[all_selected_names]), use_container_width=True)
 
     with body_cols[1]:
         st.altair_chart(get_latest_soil_moisture_readings(
             plants_df[selected_names], mois_sort), use_container_width=True)
 
         st.altair_chart(get_soil_moisture_over_time(
-            merged_df[selected_names]), use_container_width=True)
+            merged_df[all_selected_names]), use_container_width=True)
 
 
 if __name__ == "__main__":
@@ -101,6 +103,7 @@ if __name__ == "__main__":
     plants = load_all_plant_data(conn)
 
     merged = merge_long_and_short_dataframes(long_plants, plants)
+    merged["plant_name"] = merged["plant_name"].dropna()
 
     st.set_page_config(layout="wide")
 
@@ -110,15 +113,17 @@ if __name__ == "__main__":
                       len(plants["plant_name"].unique()))
     st.sidebar.divider()
 
-    selected_plants = get_selected_plants(plants)
+    selected_plants = get_selected_plants(plants, "")
+    all_selected_plants = get_selected_plants(merged, "for Long Term Data")
 
     name_in_selected_plants = get_names_of_selected_plants(
         plants, selected_plants)
+    all_name_in_selected_plants = get_names_of_selected_plants(
+        merged, all_selected_plants)
+
     st.sidebar.divider()
 
     CRITICAL_TEMP_PLANTS = get_names_of_critical_temp_plants(plants)
-
-    print(type(CRITICAL_TEMP_PLANTS))
 
     st.sidebar.subheader("Latest Temperature Readings:")
     sort_ascending_temp = st.sidebar.checkbox(
@@ -149,5 +154,6 @@ if __name__ == "__main__":
         get_main_body(plants,
                       merged,
                       name_in_selected_plants,
+                      all_name_in_selected_plants,
                       sort_ascending_temp,
                       sort_ascending_moisture)
