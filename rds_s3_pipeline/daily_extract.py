@@ -91,7 +91,8 @@ def convert_to_parquet_and_upload(plant_conditions: list[dict], s3_client: clien
     """
 
     df = pd.DataFrame(plant_conditions)
-    df.to_parquet('./plant_conditions.parquet', index=False)
+    df.to_parquet('./plant_conditions.parquet',
+                  index=False, engine='fastparquet')
 
     s3_client.upload_file("./plant_conditions.parquet", bucket,
                           f"{CURRENT_DATE.year}-{CURRENT_DATE.month}/{CURRENT_DATE.day}.parquet")
